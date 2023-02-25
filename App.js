@@ -1,5 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, ImageBackground } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ImageBackground,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Dimensions,
+} from "react-native";
 
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import LoginScreen from "./Screens/LoginScreen";
@@ -13,23 +20,24 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("./assets/images/PhotoBG.jpg")}
-        resizeMode="cover"
-        style={styles.image}
-      >
-        {activeScreen === 0 ? (
-          <LoginScreen changeScrenn={changeScrennFunc} />
-        ) : (
-          <RegistrationScreen changeScrenn={changeScrennFunc} />
-        )}
-      </ImageBackground>
-      <StatusBar style="auto" />
-    </View>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("./assets/images/PhotoBG.jpg")}
+          resizeMode="cover"
+          style={styles.image}
+        >
+          {activeScreen === 0 ? (
+            <RegistrationScreen changeScrenn={changeScrennFunc} />
+          ) : (
+            <LoginScreen changeScrenn={changeScrennFunc} />
+          )}
+        </ImageBackground>
+        <StatusBar style="auto" />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
-// cat;
 
 const styles = StyleSheet.create({
   container: {
