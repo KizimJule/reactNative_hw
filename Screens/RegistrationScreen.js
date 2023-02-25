@@ -24,9 +24,11 @@ const initialState = {
 };
 
 export default function RegistrationScreen({ changeScrenn }) {
-  const [password, setPassword] = useState("");
+  const [login, setLogin] = useState(initialState.login);
+  const [email, setEmail] = useState(initialState.email);
+  const [password, setPassword] = useState(initialState.password);
   const [focusedInput, setFocusedInput] = useState(null);
-  // const [userImg, setUserImg] = useState(null);
+  const [userImg, setUserImg] = useState(null);
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +40,11 @@ export default function RegistrationScreen({ changeScrenn }) {
   const keyboardHide = () => {
     setShowKeyboard(false);
     Keyboard.dismiss();
+
+    if (state.login === "" || state.email === "" || state.password === "") {
+      return alert("Все поля должны быть заполнены!");
+    }
+
     console.log(state);
     setState(initialState);
   };
@@ -72,18 +79,36 @@ export default function RegistrationScreen({ changeScrenn }) {
         >
           <View style={styles.imgUserContainer}>
             <TouchableOpacity
-              // onPress={() => setUserImg(1)}
+              onPress={() => {
+                setUserImg(1);
+              }}
               activeOpacity={0.8}
-              style={styles.imgAdd}
+              style={{
+                ...styles.imgAdd,
+                display: userImg === 1 ? "none" : "flex",
+              }}
             >
-              <Image source={require("../assets/images/add.png")} />
+              <Image width={25} source={require("../assets/images/add.png")} />
             </TouchableOpacity>
-            {/* {setUserImg ? (
-            <Image
-              style={styles.imgUser}
-              source={require("../assets/images/PhotoBG.jpg")}
-            />
-          ) : null} */}
+
+            <TouchableOpacity
+              onPress={() => {
+                setUserImg(null);
+              }}
+              activeOpacity={0.8}
+              style={{
+                ...styles.imgAdd,
+                display: userImg === null ? "none" : "flex",
+              }}
+            >
+              <Image width={25} source={require("../assets/images/del.png")} />
+            </TouchableOpacity>
+            {userImg === 1 ? (
+              <Image
+                style={styles.imgUser}
+                source={require("../assets/images/UserIcon.jpg")}
+              />
+            ) : null}
           </View>
 
           <Text style={styles.titleText}>Регистрация</Text>
@@ -196,6 +221,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 80,
     left: 107,
+    zIndex: 100,
   },
   form: {
     flex: 1,
@@ -265,5 +291,11 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "relative",
     alignItems: "center",
+  },
+  imgUser: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    resizeMode: "cover",
   },
 });

@@ -22,7 +22,8 @@ const initialState = {
 };
 
 export default function LoginScreen({ changeScrenn }) {
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(initialState.email);
+  const [password, setPassword] = useState(initialState.password);
   const [focusedInput, setFocusedInput] = useState(null);
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
@@ -36,6 +37,9 @@ export default function LoginScreen({ changeScrenn }) {
   const keyboardHide = () => {
     setShowKeyboard(false);
     Keyboard.dismiss();
+    if (!state.email || !state.password) {
+      return alert("Все поля должны быть заполнены!");
+    }
     console.log(state);
     setState(initialState);
   };
