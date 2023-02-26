@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { useCallback } from "react";
+
+import * as ImagePicker from "expo-image-picker";
+
 import {
   StyleSheet,
   Text,
@@ -11,11 +13,8 @@ import {
   Image,
   TouchableWithoutFeedback,
   Keyboard,
+  // ImageViewer,
 } from "react-native";
-
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-SplashScreen.preventAutoHideAsync();
 
 const initialState = {
   login: "",
@@ -24,14 +23,13 @@ const initialState = {
 };
 
 export default function RegistrationScreen({ changeScrenn }) {
-  const [login, setLogin] = useState(initialState.login);
-  const [email, setEmail] = useState(initialState.email);
-  const [password, setPassword] = useState(initialState.password);
   const [focusedInput, setFocusedInput] = useState(null);
   const [userImg, setUserImg] = useState(null);
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
+
+  // const [selectedImage, setSelectedImage] = useState(null);
 
   const showPasswordHandler = () => {
     const toggle = showPassword ? false : true;
@@ -52,36 +50,33 @@ export default function RegistrationScreen({ changeScrenn }) {
     setShowKeyboard(false);
     Keyboard.dismiss();
   };
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
-    "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
-  });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+  // const pickImageAsync = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     allowsEditing: true,
+  //     quality: 1,
+  //   });
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  //   if (!result.canceled) {
+  //     setSelectedImage(result.assets[0].uri);
+  //   } else {
+  //     alert("You did not select any image.");
+  //   }
+  // };
+  // const PlaceholderImage = require("../assets/images/UserIcon.jpg");
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHideOut}>
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
-        <View
-          onLayout={onLayoutRootView}
-          style={{ ...styles.form, paddingBottom: showKeyboard ? 2 : 78 }}
-        >
+        <View style={{ ...styles.form, marginBottom: showKeyboard ? -192 : 0 }}>
           <View style={styles.imgUserContainer}>
             <TouchableOpacity
               onPress={() => {
                 setUserImg(1);
               }}
+              // onPress={pickImageAsync}
               activeOpacity={0.8}
               style={{
                 ...styles.imgAdd,
@@ -103,6 +98,11 @@ export default function RegistrationScreen({ changeScrenn }) {
             >
               <Image width={25} source={require("../assets/images/del.png")} />
             </TouchableOpacity>
+            {/* <ImageViewer
+              style={styles.imgUser}
+              placeholderImageSource={PlaceholderImage }
+              selectedImage={selectedImage}
+            /> */}
             {userImg === 1 ? (
               <Image
                 style={styles.imgUser}
@@ -236,6 +236,7 @@ const styles = StyleSheet.create({
     paddingTop: 92,
     paddingLeft: 16,
     paddingRight: 16,
+    paddingBottom: 78,
   },
   titleText: {
     fontWeight: "500",

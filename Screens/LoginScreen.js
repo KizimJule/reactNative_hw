@@ -12,18 +12,12 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-SplashScreen.preventAutoHideAsync();
-
 const initialState = {
   email: "",
   password: "",
 };
 
 export default function LoginScreen({ changeScrenn }) {
-  const [email, setEmail] = useState(initialState.email);
-  const [password, setPassword] = useState(initialState.password);
   const [focusedInput, setFocusedInput] = useState(null);
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
@@ -48,31 +42,12 @@ export default function LoginScreen({ changeScrenn }) {
     Keyboard.dismiss();
   };
 
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
-    "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
-  });
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <TouchableWithoutFeedback onPress={keyboardHideOut}>
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
-        <View
-          onLayout={onLayoutRootView}
-          style={{ ...styles.form, paddingBottom: showKeyboard ? 2 : 132 }}
-        >
+        <View style={{ ...styles.form, marginBottom: showKeyboard ? -250 : 0 }}>
           <Text style={styles.titleText}>Войти</Text>
 
           <TextInput
@@ -167,6 +142,7 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingLeft: 16,
     paddingRight: 16,
+    paddingBottom: 132,
   },
   titleText: {
     fontWeight: "500",
