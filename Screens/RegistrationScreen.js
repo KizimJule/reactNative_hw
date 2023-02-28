@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import * as ImagePicker from "expo-image-picker";
+// import * as ImagePicker from "expo-image-picker";
 
 import {
   StyleSheet,
@@ -83,7 +83,11 @@ export default function RegistrationScreen({ changeScrenn }) {
                 display: userImg === 1 ? "none" : "flex",
               }}
             >
-              <Image width={25} source={require("../assets/images/add.png")} />
+              <Image
+                width={25}
+                height={25}
+                source={require("../assets/images/add.png")}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -92,11 +96,15 @@ export default function RegistrationScreen({ changeScrenn }) {
               }}
               activeOpacity={0.8}
               style={{
-                ...styles.imgAdd,
+                ...styles.imgDel,
                 display: userImg === null ? "none" : "flex",
               }}
             >
-              <Image width={25} source={require("../assets/images/del.png")} />
+              <Image
+                width={25}
+                height={25}
+                source={require("../assets/images/del.png")}
+              />
             </TouchableOpacity>
             {/* <ImageViewer
               style={styles.imgUser}
@@ -200,6 +208,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    zIndex: 200,
   },
   image: {
     flex: 1,
@@ -216,11 +225,15 @@ const styles = StyleSheet.create({
     top: -50,
   },
   imgAdd: {
-    width: 25,
-    height: 25,
     position: "absolute",
     top: 80,
     left: 107,
+    zIndex: 100,
+  },
+  imgDel: {
+    position: "absolute",
+    top: 75,
+    left: 102,
     zIndex: 100,
   },
   form: {

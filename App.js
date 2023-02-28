@@ -40,18 +40,20 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <ImageBackground
-        source={require("./assets/images/PhotoBG.jpg")}
-        resizeMode="cover"
-        style={styles.image}
-      >
-        {activeScreen === 0 ? (
-          <RegistrationScreen changeScrenn={changeScrennFunc} />
-        ) : (
-          <LoginScreen changeScrenn={changeScrennFunc} />
-        )}
-      </ImageBackground>
+    <View style={styles.container}>
+      <View style={styles.container} onLayout={onLayoutRootView}>
+        <ImageBackground
+          source={require("./assets/images/PhotoBG.jpg")}
+          resizeMode="cover"
+          style={styles.imageBG}
+        >
+          {activeScreen === 0 ? (
+            <RegistrationScreen changeScrenn={changeScrennFunc} />
+          ) : (
+            <LoginScreen changeScrenn={changeScrennFunc} />
+          )}
+        </ImageBackground>
+      </View>
       <StatusBar style="auto" />
     </View>
   );
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  image: {
+  imageBG: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "flex-end",
