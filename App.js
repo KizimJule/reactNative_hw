@@ -1,59 +1,38 @@
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
-import {
-  StyleSheet,
-  View,
-  ImageBackground,
-  // Dimensions,
-} from "react-native";
 
-import RegistrationScreen from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
+import { StyleSheet, View } from "react-native";
 
-import React, { useState } from "react";
+import { useRout } from "./router";
+
+import { NavigationContainer } from "@react-navigation/native";
 
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [activeScreen, setActiveScreen] = useState(0);
-
-  const changeScrennFunc = (value) => {
-    setActiveScreen(value);
-  };
-
   const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
-    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"), //400
+    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"), //700
+    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"), //500
   });
-
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
-
   if (!fontsLoaded) {
     return null;
   }
 
+  const routing = useRout(true);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
-        <ImageBackground
-          source={require("./assets/images/PhotoBG.jpg")}
-          resizeMode="cover"
-          style={styles.imageBG}
-        >
-          {activeScreen === 0 ? (
-            <RegistrationScreen changeScrenn={changeScrennFunc} />
-          ) : (
-            <LoginScreen changeScrenn={changeScrennFunc} />
-          )}
-        </ImageBackground>
-      </View>
+    <View style={styles.container} onLayout={onLayoutRootView}>
+      <NavigationContainer>{routing}</NavigationContainer>
+
       <StatusBar style="auto" />
     </View>
   );
@@ -63,10 +42,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-  },
-  imageBG: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
   },
 });
