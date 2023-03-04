@@ -1,64 +1,98 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 
+const initialPost = {
+  image: "",
+  name: "",
+  location: "",
+};
+
 export default function CreatePostsScreen({ navigation }) {
+  const [showKeyboard, setShowKeyboard] = useState(false);
+  const [state, setState] = useState(initialPost);
+
+  const keyboardHideOut = () => {
+    setShowKeyboard(false);
+    Keyboard.dismiss();
+  };
+
+  const addPostBtn = () => {
+    setShowKeyboard(false);
+    Keyboard.dismiss();
+
+    console.log(state);
+    setState(initialPost);
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.contentBox}>
-        <View style={styles.photoIcon}>
-          <FontAwesome name="camera" size={24} color={"#BDBDBD"} />
-        </View>
-      </View>
-      <TouchableOpacity>
-        <Text style={styles.addPhoto}>Загрузите фото</Text>
-      </TouchableOpacity>
-
-      <View style={styles.form}>
-        <TextInput
-          style={{ ...styles.input, paddingLeft: 0 }}
-          placeholder="Название..."
-          placeholderTextColor={"#BDBDBD"}
-          inputMode="text"
-        />
-        <View style={styles.inputBox}>
-          <View style={styles.inputIcon}>
-            <Feather name="map-pin" size={24} color={"#BDBDBD"} />
+    <TouchableWithoutFeedback onPress={keyboardHideOut}>
+      <View style={styles.container}>
+        <View style={styles.contentBox}>
+          <View style={styles.photoIcon}>
+            <FontAwesome name="camera" size={24} color={"#BDBDBD"} />
           </View>
+        </View>
+        <TouchableOpacity>
+          <Text style={styles.addPhoto}>Загрузите фото</Text>
+        </TouchableOpacity>
 
+        <View style={styles.form}>
           <TextInput
-            style={{ ...styles.input, paddingLeft: 32 }}
-            placeholder="Местность..."
+            style={{ ...styles.input, paddingLeft: 0 }}
+            placeholder="Название..."
             placeholderTextColor={"#BDBDBD"}
             inputMode="text"
+            value={state.name}
+            onChangeText={(value) =>
+              setState((prevState) => ({ ...prevState, name: value }))
+            }
           />
+          <View style={styles.inputBox}>
+            <View style={styles.inputIcon}>
+              <Feather name="map-pin" size={24} color={"#BDBDBD"} />
+            </View>
+
+            <TextInput
+              style={{ ...styles.input, paddingLeft: 32 }}
+              placeholder="Местность..."
+              placeholderTextColor={"#BDBDBD"}
+              inputMode="text"
+              value={state.location}
+              onChangeText={(value) =>
+                setState((prevState) => ({ ...prevState, location: value }))
+              }
+            />
+          </View>
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={addPostBtn}
+            style={styles.button}
+          >
+            <Text style={styles.textButton}>Опубликовать</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("PostsScreen")}
+            style={styles.buttonGo}
+          >
+            <Feather name="trash-2" size={24} color={"#BDBDBD"} />
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          activeOpacity={0.8}
-          // onPress={}
-          style={styles.button}
-        >
-          <Text style={styles.textButton}>Опубликовать</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.8}
-          // onPress={}
-          style={styles.buttonGo}
-        >
-          <Feather name="trash-2" size={24} color={"#BDBDBD"} />
-        </TouchableOpacity>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -69,8 +103,6 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingBottom: 32,
     flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: "#FFFFFF",
   },
   contentBox: {
@@ -99,12 +131,12 @@ const styles = StyleSheet.create({
     color: "#BDBDBD",
   },
   form: {
-    marginTop: 28,
+    marginTop: 40,
   },
   input: {
     borderBottomWidth: 1,
     borderBottomColor: "#E8E8E8",
-    marginBottom: 20,
+    marginBottom: 32,
     padding: 15,
   },
   inputBox: {
@@ -120,7 +152,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 16,
     maxWidth: 343,
-    marginBottom: 80,
+    marginBottom: 100,
   },
   textButton: {
     textAlign: "center",

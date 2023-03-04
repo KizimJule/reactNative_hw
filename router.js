@@ -1,11 +1,4 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
-
-//import icons
-import { AntDesign } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import { Fontisto } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
 
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import LoginScreen from "./Screens/LoginScreen";
@@ -14,54 +7,78 @@ import Home from "./Screens/Home";
 import CreatePostsScreen from "./Screens/CreatePostsScreen";
 import ProfileScreen from "./Screens/ProfileScreen";
 import PostsScreen from "./Screens/PostsScreen";
-
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// const Tab = createBottomTabNavigator();
+import CommentsScreen from "./Screens/CommentsScreen";
 
 import { createStackNavigator } from "@react-navigation/stack";
 const MainStack = createStackNavigator();
+const ScreenStack = createStackNavigator();
 
 export const useRout = (isAuth) => {
-  if (isAuth) {
-    return (
-      <MainStack.Navigator initialRouteName="Login">
-        <MainStack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={LoginScreen}
-        />
-        <MainStack.Screen
-          options={{ headerShown: false }}
-          name="Register"
-          component={RegistrationScreen}
-        />
-        <MainStack.Screen
-          options={{ headerShown: false }}
-          name="Home"
-          component={Home}
-        />
-      </MainStack.Navigator>
-    );
-  }
-
-  return (
-    <MainStack.Navigator>
+  return isAuth ? (
+    <MainStack.Navigator initialRouteName="Login">
+      <MainStack.Screen
+        options={{ headerShown: false }}
+        name="Login"
+        component={LoginScreen}
+      />
+      <MainStack.Screen
+        options={{ headerShown: false }}
+        name="Register"
+        component={RegistrationScreen}
+      />
       <MainStack.Screen
         options={{ headerShown: false }}
         name="Home"
         component={Home}
       />
       <MainStack.Screen
-        options={{ headerShown: false }}
+        options={{
+          headerShown: true,
+          headerTitle: "Комментарии",
+          headerTitleStyle: { color: "#212121", fontSize: 17 },
+          headerTitleAlign: "center",
+        }}
+        name="CommentsScreen"
+        component={CommentsScreen}
+      />
+      {/* <MainStack.Screen
+          options={{
+            headerShown: true,
+
+            headerTitleStyle: { color: "#212121", fontSize: 17 },
+            headerTitleAlign: "center",
+          }}
+          name="Posts"
+          component={PostsScreen}
+        /> */}
+    </MainStack.Navigator>
+  ) : (
+    <ScreenStack.Navigator>
+      <ScreenStack.Screen
+        options={{ headerShown: true }}
+        name="Home"
+        component={Home}
+      />
+      <ScreenStack.Screen
+        options={{ headerShown: true }}
         name="Posts"
         component={PostsScreen}
       />
-      <MainStack.Screen
-        options={{ headerShown: false }}
+      <ScreenStack.Screen
+        options={{ headerShown: true }}
         name="CreatePostsScreen"
         component={CreatePostsScreen}
       />
-    </MainStack.Navigator>
+      <ScreenStack.Screen
+        options={{
+          headerShown: true,
+          headerTitleStyle: { color: "#212121", fontSize: 17 },
+          headerTitleAlign: "center",
+        }}
+        name="CommentsScreen"
+        component={CommentsScreen}
+      />
+    </ScreenStack.Navigator>
 
     // <Tab.Navigator
     //   screenOptions={{

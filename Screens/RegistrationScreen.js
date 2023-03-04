@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // import * as ImagePicker from "expo-image-picker";
 
@@ -15,7 +15,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   Keyboard,
-
+  Dimensions,
   // ImageViewer,
 } from "react-native";
 
@@ -33,6 +33,24 @@ export default function RegistrationScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
 
   // const [selectedImage, setSelectedImage] = useState(null);
+
+  const [windowWidth, setWindowWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [windowHeight, setWindowHeight] = useState(
+    Dimensions.get("window").height
+  );
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width;
+      setWindowWidth(width);
+      const height = Dimensions.get("window").height;
+      setWindowHeight(height);
+    };
+    const dimensionsHandler = Dimensions.addEventListener("change", onChange);
+
+    return () => dimensionsHandler.remove();
+  }, []);
 
   const showPasswordHandler = () => {
     const toggle = showPassword ? false : true;
@@ -76,7 +94,11 @@ export default function RegistrationScreen({ navigation }) {
         <ImageBackground
           source={require("../assets/images/PhotoBG.jpg")}
           resizeMode="cover"
-          style={styles.imageBG}
+          style={{
+            ...styles.imageBG,
+            width: windowWidth,
+            height: windowHeight,
+          }}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}

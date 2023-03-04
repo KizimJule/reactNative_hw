@@ -1,95 +1,221 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import * as SplashScreen from "expo-splash-screen";
+
+import { Feather } from "@expo/vector-icons";
+
 import {
   StyleSheet,
   ImageBackground,
   Text,
   View,
   Image,
-  SafeAreaView,
-  ScrollView,
-  TextInput,
-  KeyboardAvoidingView,
+  FlatList,
   TouchableOpacity,
-  Platform,
-  Keyboard,
-  TouchableWithoutFeedback,
+  Dimensions,
 } from "react-native";
 
-const COURSES = [
+const POSTS = [
   {
-    id: "45k6-j54k-4jth",
-    title: "HTML",
+    id: "1",
+    postImage: require("../assets/images/Forest.jpg"),
+    title: "Лес",
+    location: "Ukraine",
+    comments: 8,
+    likes: 153,
   },
   {
-    id: "4116-jfk5-43rh",
-    title: "JavaScript",
+    id: "2",
+    postImage: require("../assets/images/Sea.jpg"),
+    title: "Закат на Черном море",
+    location: "Ukraine",
+    comments: 3,
+    likes: 200,
   },
   {
-    id: "4d16-5tt5-4j55",
-    title: "React",
-  },
-  {
-    id: "LG16-ant5-0J25",
-    title: "React Native",
+    id: "3",
+    postImage: require("../assets/images/Italy.jpg"),
+    title: "Старый домик в Венеции",
+    location: "Italy",
+    comments: 50,
+    likes: 200,
   },
 ];
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const [userImg, setUserImg] = useState(1);
-  const [courses, setCourses] = useState(COURSES);
+  const [posts, setPosts] = useState(POSTS);
+
+  const [windowWidth, setWindowWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [windowHeight, setWindowHeight] = useState(
+    Dimensions.get("window").height
+  );
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width;
+      setWindowWidth(width);
+      const height = Dimensions.get("window").height;
+      setWindowHeight(height);
+    };
+    const dimensionsHandler = Dimensions.addEventListener("change", onChange);
+
+    return () => dimensionsHandler.remove();
+  }, []);
+
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, []);
 
   return (
     <View style={styles.container}>
       <ImageBackground
         source={require("../assets/images/PhotoBG.jpg")}
         resizeMode="cover"
-        style={styles.imageBG}
+        style={{ ...styles.imageBG, width: windowWidth, height: windowHeight }}
       >
-        <View style={styles.profile}>
-          <View style={styles.imgUserContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                setUserImg(1);
-              }}
-              activeOpacity={0.8}
+        <FlatList
+          ListHeaderComponent={
+            <View
               style={{
-                ...styles.imgAdd,
-                display: userImg === 1 ? "none" : "flex",
+                ...styles.profile,
+                marginTop: windowWidth > 500 ? 100 : 147,
+                width: windowWidth,
+              }}
+            >
+              <View
+                style={{
+                  ...styles.imgUserContainer,
+                  left: (windowWidth - 120) / 2,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    setUserImg(1);
+                  }}
+                  activeOpacity={0.8}
+                  style={{
+                    ...styles.imgAdd,
+                    display: userImg === 1 ? "none" : "flex",
+                  }}
+                >
+                  <Image
+                    width={25}
+                    height={25}
+                    source={require("../assets/images/add.png")}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setUserImg(null);
+                  }}
+                  activeOpacity={0.8}
+                  style={{
+                    ...styles.imgDel,
+                    display: userImg === null ? "none" : "flex",
+                  }}
+                >
+                  <Image
+                    width={25}
+                    height={25}
+                    source={require("../assets/images/del.png")}
+                  />
+                </TouchableOpacity>
+                {userImg === 1 ? (
+                  <Image
+                    style={styles.avatarImage}
+                    source={require("../assets/images/UserIcon.jpg")}
+                  />
+                ) : null}
+              </View>
+              <View style={{ position: "absolute", right: 16, top: 22 }}>
+                <Feather name="log-out" size={24} color={"#BDBDBD"} />
+              </View>
+              <View
+                style={{
+                  ...styles.userTitleWrapper,
+                  width: windowWidth - 16 * 2,
+                }}
+              >
+                <Text
+                  style={{ ...styles.userTitle, fontFamily: "Roboto-Medium" }}
+                >
+                  Natali Romanova
+                </Text>
+              </View>
+            </View>
+          }
+          data={posts}
+          renderItem={({ item }) => (
+            <View
+              style={{
+                ...styles.cardContainer,
+                width: windowWidth,
               }}
             >
               <Image
-                width={25}
-                height={25}
-                source={require("../assets/images/add.png")}
+                source={item.postImage}
+                style={{
+                  ...styles.cardImage,
+                  width: windowWidth - 16 * 2,
+                }}
               />
-            </TouchableOpacity>
+              <Text
+                style={{
+                  ...styles.cardTitle,
+                  width: windowWidth - 16 * 2,
+                  fontFamily: "Roboto-Medium",
+                }}
+              >
+                {item.title}
+              </Text>
+              <View
+                style={{ ...styles.cardThumb, width: windowWidth - 16 * 2 }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={styles.cardWrapper}
+                      onPress={() => navigation.navigate("CommentsScreen")}
+                    >
+                      <Feather
+                        name="message-circle"
+                        size={24}
+                        color={"#FF6C00"}
+                      />
+                      <Text style={styles.cardText}>{item.comments}</Text>
+                    </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => {
-                setUserImg(null);
-              }}
-              activeOpacity={0.8}
-              style={{
-                ...styles.imgDel,
-                display: userImg === null ? "none" : "flex",
-              }}
-            >
-              <Image
-                width={25}
-                height={25}
-                source={require("../assets/images/del.png")}
-              />
-            </TouchableOpacity>
+                    <View style={{ ...styles.cardWrapper, marginLeft: 24 }}>
+                      <Feather name="thumbs-up" size={24} color={"#FF6C00"} />
+                      <Text style={styles.cardText}>{item.likes}</Text>
+                    </View>
+                  </View>
 
-            {userImg === 1 ? (
-              <Image
-                style={styles.imgUser}
-                source={require("../assets/images/UserIcon.jpg")}
-              />
-            ) : null}
-          </View>
-
-          <Text style={styles.textTitle}>Natali Romanova</Text>
-        </View>
+                  <View style={{ ...styles.cardWrapper, marginLeft: 145 }}>
+                    <Feather name="map-pin" size={24} color={"#BDBDBD"} />
+                    <Text style={styles.cardText}>{item.location}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+        />
       </ImageBackground>
     </View>
   );
@@ -108,17 +234,9 @@ const styles = StyleSheet.create({
   profile: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    width: "100%",
-    position: "absolute",
-    bottom: 0,
-    paddingTop: 32,
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingBottom: 132,
+    alignItems: "center",
   },
   image: {
     flex: 1,
@@ -127,12 +245,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   imgUserContainer: {
+    position: "absolute",
+    top: -60,
     width: 120,
     height: 120,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
-    position: "absolute",
-    top: -50,
+  },
+  userTitleWrapper: {
+    alignItems: "center",
+    marginTop: 92,
+    marginBottom: 32,
   },
   imgAdd: {
     position: "absolute",
@@ -146,9 +269,48 @@ const styles = StyleSheet.create({
     left: 102,
     zIndex: 100,
   },
-  textTitle: {
-    marginTop: 92,
+  userTitle: {
     fontFamily: "Roboto-Medium",
     fontSize: 30,
+    lineHeight: 35,
+    color: "#212121",
+    textAlign: "center",
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 16,
+    resizeMode: "cover",
+  },
+  cardContainer: {
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  cardImage: {
+    resizeMode: "cover",
+    borderRadius: 8,
+  },
+  cardTitle: {
+    marginTop: 8,
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#212121",
+  },
+  cardThumb: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
+    marginBottom: 35,
+  },
+  cardWrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cardText: {
+    marginLeft: 4,
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#212121",
   },
 });

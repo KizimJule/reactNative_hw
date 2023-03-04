@@ -22,6 +22,10 @@ const POSTS = [
     location: "Ivano-Frankivs'k Region, Ukraine",
     comments: 8,
     likes: 153,
+    userAvatar: require("../assets/images/Ellipse.png"),
+    text: "Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!",
+    data: "09 июня, 2020",
+    time: "08:40",
   },
   {
     id: "2",
@@ -30,6 +34,10 @@ const POSTS = [
     location: "Ukraine",
     comments: 3,
     likes: 200,
+    userAvatar: require("../assets/images/UserIcon.jpg"),
+    text: "A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.",
+    data: "09 июня, 2020",
+    time: "04:14",
   },
   {
     id: "3",
@@ -38,6 +46,10 @@ const POSTS = [
     location: "Italy",
     comments: 50,
     likes: 200,
+    userAvatar: require("../assets/images/Ellipse.png"),
+    text: "Thank you! That was very helpful!.",
+    data: "09 июня, 2020",
+    time: "09:20",
   },
 ];
 export default function ProfileScreen({ navigation }) {
@@ -74,13 +86,13 @@ export default function ProfileScreen({ navigation }) {
         ListHeaderComponent={
           <View style={styles.userSection}>
             <Image
-              style={styles.avatarImage}
-              source={require("../assets/images/UserIcon.jpg")}
+              style={{
+                ...styles.cardImage,
+                width: windowWidth - 16 * 2,
+              }}
+              // source={item.postImage}
+              source={require("../assets/images/Sea.jpg")}
             />
-            <View style={styles.userInfo}>
-              <Text style={styles.textUserName}>Natali Romanova</Text>
-              <Text style={styles.textUserEmail}>email@example.com</Text>
-            </View>
           </View>
         }
         data={posts}
@@ -89,25 +101,43 @@ export default function ProfileScreen({ navigation }) {
             style={{
               ...styles.cardContainer,
               width: windowWidth,
+              paddingLeft: 16,
+              paddingRight: 16,
+              flexDirection: "column",
             }}
           >
-            <Image
-              source={item.postImage}
+            <View
               style={{
-                ...styles.cardImage,
-                width: windowWidth - 16 * 2,
-              }}
-            />
-            <Text
-              style={{
-                ...styles.cardTitle,
-                width: windowWidth - 16 * 2,
-                fontFamily: "Roboto-Medium",
+                flexDirection: "row",
               }}
             >
-              {item.title}
-            </Text>
-            <View style={{ ...styles.cardThumb, width: windowWidth - 16 * 2 }}>
+              <Image
+                source={item.userAvatar}
+                style={{
+                  ...styles.cardImage,
+                  width: 28,
+                  height: 28,
+                  marginRight: 8,
+                }}
+              />
+              <View
+                style={{
+                  width: 200,
+                }}
+              >
+                <Text
+                  style={{
+                    ...styles.cardTitle,
+                    width: windowWidth - 16 * 2,
+                    fontFamily: "Roboto-Medium",
+                  }}
+                >
+                  {item.text}
+                </Text>
+              </View>
+            </View>
+
+            {/* <View style={{ ...styles.cardThumb, width: windowWidth - 16 * 2 }}>
               <View
                 style={{
                   flexDirection: "row",
@@ -121,7 +151,7 @@ export default function ProfileScreen({ navigation }) {
                 >
                   <TouchableOpacity
                     style={styles.cardWrapper}
-                    onPress={() => navigation.navigate("CommentsScreen")}
+                    // onPress={() => navigation.navigate("CommentsScreen")}
                   >
                     <Feather
                       name="message-circle"
@@ -137,7 +167,7 @@ export default function ProfileScreen({ navigation }) {
                   </View>
                 </View>
               </View>
-            </View>
+            </View> */}
           </View>
         )}
         keyExtractor={(item) => item.id}
@@ -245,6 +275,8 @@ const styles = StyleSheet.create({
   cardImage: {
     resizeMode: "cover",
     borderRadius: 8,
+    width: 28,
+    height: 28,
   },
   cardTitle: {
     marginTop: 8,
@@ -297,5 +329,10 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     fontSize: 11,
     lineHeight: 13,
+  },
+  cardImage: {
+    resizeMode: "cover",
+    borderRadius: 8,
+    marginBottom: 32,
   },
 });

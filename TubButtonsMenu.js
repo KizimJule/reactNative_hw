@@ -47,8 +47,10 @@ export const TubButtonsMenu = () => {
     >
       <Tab.Screen
         options={{
+          headerShown: true,
           title: "Публикации",
           tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true,
           tabBarIcon: ({ focused, size, color }) => (
             <AntDesign
               name="appstore-o"
@@ -69,11 +71,13 @@ export const TubButtonsMenu = () => {
         options={{
           title: "Создать публикацию",
           headerLeft: ({ focused, size, color }) => (
-            <TouchableOpacity onPress={() => console.log("you press logout")}>
+            <TouchableOpacity onPress={() => console.log("you press go-back")}>
               <Feather name="arrow-left" size={24} color={"#BDBDBD"} />
             </TouchableOpacity>
           ),
           tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true,
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ focused, size, color }) => (
             <View
               style={{
@@ -94,8 +98,10 @@ export const TubButtonsMenu = () => {
       />
       <Tab.Screen
         options={{
-          title: "Публикации",
+          headerShown: false,
+          title: "Profile",
           tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true,
           tabBarIcon: ({ focused, size, color }) => (
             <Feather name="user" size={24} color={"rgba(33, 33, 33, 0.8)"} />
           ),

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCallback } from "react";
 import {
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  Dimensions,
 } from "react-native";
 
 const initialState = {
@@ -23,6 +24,24 @@ export default function LoginScreen({ navigation }) {
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [windowWidth, setWindowWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [windowHeight, setWindowHeight] = useState(
+    Dimensions.get("window").height
+  );
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width;
+      setWindowWidth(width);
+      const height = Dimensions.get("window").height;
+      setWindowHeight(height);
+    };
+    const dimensionsHandler = Dimensions.addEventListener("change", onChange);
+
+    return () => dimensionsHandler.remove();
+  }, []);
 
   const showPasswordHandler = () => {
     const toggle = showPassword ? false : true;
@@ -38,10 +57,6 @@ export default function LoginScreen({ navigation }) {
     console.log(state);
     setState(initialState);
     navigation.navigate("Home");
-    // navigation.navigate("Home", {
-    //   screen: "Posts",
-    //   params: { email: state.email, password: state.password },
-    // });
   };
 
   const keyboardHideOut = () => {
@@ -55,13 +70,21 @@ export default function LoginScreen({ navigation }) {
         <ImageBackground
           source={require("../assets/images/PhotoBG.jpg")}
           resizeMode="cover"
-          style={styles.imageBG}
+          style={{
+            ...styles.imageBG,
+            width: windowWidth,
+            height: windowHeight,
+          }}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
             <View
-              style={{ ...styles.form, marginBottom: showKeyboard ? -250 : 0 }}
+              style={{
+                ...styles.form,
+                width: windowWidth,
+                marginBottom: showKeyboard ? -250 : 0,
+              }}
             >
               <Text style={styles.titleText}>Войти</Text>
 
