@@ -14,34 +14,9 @@ import {
   Dimensions,
 } from "react-native";
 
-const POSTS = [
-  {
-    id: "1",
-    postImage: require("../assets/images/Forest.jpg"),
-    title: "Лес",
-    location: "Ivano-Frankivs'k Region, Ukraine",
-    comments: 8,
-    likes: 153,
-  },
-  {
-    id: "2",
-    postImage: require("../assets/images/Sea.jpg"),
-    title: "Закат на Черном море",
-    location: "Ukraine",
-    comments: 3,
-    likes: 200,
-  },
-  {
-    id: "3",
-    postImage: require("../assets/images/Italy.jpg"),
-    title: "Старый домик в Венеции",
-    location: "Italy",
-    comments: 50,
-    likes: 200,
-  },
-];
-export default function ProfileScreen({ navigation }) {
-  const [posts, setPosts] = useState(POSTS);
+export default function ProfileScreen({ navigation, route }) {
+  console.log("params", route.params);
+  const [photo, setPhoto] = useState([]);
 
   const [windowWidth, setWindowWidth] = useState(
     Dimensions.get("window").width
@@ -68,6 +43,12 @@ export default function ProfileScreen({ navigation }) {
     prepare();
   }, []);
 
+  useEffect(() => {
+    if (route.params) {
+      setPhoto((prevState) => [...prevState, route.params]);
+    }
+  }, [route.params]);
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -83,30 +64,33 @@ export default function ProfileScreen({ navigation }) {
             </View>
           </View>
         }
-        data={posts}
+        data={photo}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View
             style={{
               ...styles.cardContainer,
               width: windowWidth,
+              marginBottom: 91,
             }}
           >
             <Image
-              source={item.postImage}
+              source={{ uri: item.post.photo }}
               style={{
                 ...styles.cardImage,
                 width: windowWidth - 16 * 2,
               }}
             />
+
             <Text
               style={{
                 ...styles.cardTitle,
                 width: windowWidth - 16 * 2,
-                fontFamily: "Roboto-Medium",
               }}
             >
-              {item.title}
+              {item.post.title}
             </Text>
+
             <View style={{ ...styles.cardThumb, width: windowWidth - 16 * 2 }}>
               <View
                 style={{
@@ -132,23 +116,27 @@ export default function ProfileScreen({ navigation }) {
                   </TouchableOpacity>
 
                   <View style={{ ...styles.cardWrapper, marginLeft: 56 }}>
-                    <Feather name="map-pin" size={24} color={"#BDBDBD"} />
-                    <Text style={styles.cardText}>{item.location}</Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        // navigation.navigate("MapScreen", {
+                        //   latitude: item.location.latitude,
+                        //   longitude: item.location.longitude,
+                        // })
+                        navigation.navigate("MapScreen")
+                      }
+                    >
+                      <Feather name="map-pin" size={24} color={"#BDBDBD"} />
+                    </TouchableOpacity>
+
+                    <Text style={styles.cardText}>
+                      {item.post.nameLocation}
+                    </Text>
                   </View>
                 </View>
               </View>
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.id}
-        // contentContainerStyle={{
-        //   flexGrow: 1,
-        //   alignItems: "center",
-
-        //   borderTopLeftRadius: 25,
-        //   borderTopRightRadius: 25,
-        // }}
-        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -158,7 +146,7 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     backgroundColor: "#FFFFFF",
-    alignItems: "center",
+    // alignItems: "center",
   },
   userContainer: {
     flex: 1,
@@ -172,7 +160,6 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
-    // marginRight: 8,
   },
   imgUser: {
     width: 60,
@@ -189,17 +176,12 @@ const styles = StyleSheet.create({
   },
   profile: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     alignItems: "center",
   },
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
+
   imgUserContainer: {
     position: "absolute",
     top: -60,
@@ -239,18 +221,23 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   cardContainer: {
+    width: 343,
+    height: 240,
     alignItems: "center",
     backgroundColor: "#FFFFFF",
   },
   cardImage: {
     resizeMode: "cover",
     borderRadius: 8,
+    width: 343,
+    height: 240,
   },
   cardTitle: {
     marginTop: 8,
     fontSize: 16,
     lineHeight: 19,
     color: "#212121",
+    fontFamily: "Roboto-Medium",
   },
   cardThumb: {
     flexDirection: "row",
