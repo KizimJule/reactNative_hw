@@ -20,7 +20,7 @@ import {
 const POST_COMMENT = [
   {
     id: "2",
-    postImage: require("../assets/images/Sea.jpg"),
+    postImage: require("../../assets/images/Sea.jpg"),
     title: "Закат на Черном море",
     location: "Ukraine",
     comments: 3,
@@ -29,21 +29,21 @@ const POST_COMMENT = [
     comments: [
       {
         id: "1",
-        userAvatar: require("../assets/images/Ellipse.png"),
+        userAvatar: require("../../assets/images/Ellipse.png"),
         text: "Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!",
         data: "09 июня, 2020",
         time: "08:40",
       },
       {
         id: "2",
-        userAvatar: require("../assets/images/UserIcon.jpg"),
+        userAvatar: require("../../assets/images/UserIcon.jpg"),
         text: "A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.",
         data: "09 июня, 2020",
         time: "04:14",
       },
       {
         id: "3",
-        userAvatar: require("../assets/images/Ellipse.png"),
+        userAvatar: require("../../assets/images/Ellipse.png"),
         text: "Thank you! That was very helpful!.",
         data: "09 июня, 2020",
         time: "09:20",
@@ -94,6 +94,8 @@ export default function CommentsScreen({ navigation }) {
     Keyboard.dismiss();
   };
 
+  // console.log(posts);
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -103,37 +105,12 @@ export default function CommentsScreen({ navigation }) {
               ...styles.cardImage,
               width: windowWidth - 16 * 2,
             }}
-            // source={item.postImage}
-            source={require("../assets/images/Sea.jpg")}
+            source={require("../../assets/images/Sea.jpg")}
           />
         }
         contentContainerStyle={{ width: windowWidth - 16 * 2 }}
         data={posts.comments}
-        renderItem={({ item }) => (
-          <Text>ddddddddd</Text>
-          // <View
-          //   style={{
-          //     width: windowWidth,
-          //   }}
-          // >
-          //   <View>
-          //     <View style={{ width: 200, height: 60 }}>
-          //       <Image
-          //         source={item.avatar}
-          //         style={{
-          //           ...styles.cardImage,
-          //           width: windowWidth - 16 * 2,
-          //         }}
-          //       />
-          //       <Image
-          //         style={{ width: 200, height: 60 }}
-          //         source={item.avatar}
-          //       />
-          //       <Text>dddd</Text>
-          //     </View>
-          //   </View>
-          // </View>
-        )}
+        renderItem={({ item }) => <Text>Текст</Text>}
         ListFooterComponent={
           <View style={{ width: "100%", marginBottom: 32 }}>
             <TextInput
@@ -153,14 +130,6 @@ export default function CommentsScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         }
-        // contentContainerStyle={{
-        //   flexGrow: 1,
-        //   alignItems: "center",
-
-        //   borderTopLeftRadius: 25,
-        //   borderTopRightRadius: 25,
-        // }}
-        // showsVerticalScrollIndicator={false}
       />
     </View>
   );

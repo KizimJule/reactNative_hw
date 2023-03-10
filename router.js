@@ -1,6 +1,4 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
-import { Entypo } from "@expo/vector-icons";
 
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import LoginScreen from "./Screens/LoginScreen";
@@ -9,8 +7,6 @@ import Home from "./Screens/Home";
 import CreatePostsScreen from "./Screens/CreatePostsScreen";
 import ProfileScreen from "./Screens/ProfileScreen";
 import PostsScreen from "./Screens/PostsScreen";
-import CommentsScreen from "./Screens/CommentsScreen";
-import MapScreen from "./Screens/MapScreen";
 
 import { createStackNavigator } from "@react-navigation/stack";
 const MainStack = createStackNavigator();
@@ -39,26 +35,6 @@ export const useRout = (isAuth) => {
         name="Home"
         component={Home}
       />
-      <MainStack.Screen
-        options={{
-          headerShown: true,
-          headerTitle: "Комментарии",
-          headerTitleStyle: { color: "#212121", fontSize: 17 },
-          headerTitleAlign: "center",
-        }}
-        name="CommentsScreen"
-        component={CommentsScreen}
-      />
-      <ScreenStack.Screen
-        options={{
-          headerShown: true,
-          headerTitle: "Map",
-          headerTitleStyle: { color: "#212121", fontSize: 17 },
-          headerTitleAlign: "center",
-        }}
-        name="MapScreen"
-        component={MapScreen}
-      />
     </MainStack.Navigator>
   ) : (
     <ScreenStack.Navigator>
@@ -76,24 +52,6 @@ export const useRout = (isAuth) => {
         options={{ headerShown: true }}
         name="CreatePostsScreen"
         component={CreatePostsScreen}
-      />
-      <ScreenStack.Screen
-        options={{
-          headerShown: true,
-          headerTitleStyle: { color: "#212121", fontSize: 17 },
-          headerTitleAlign: "center",
-        }}
-        name="CommentsScreen"
-        component={CommentsScreen}
-      />
-      <ScreenStack.Screen
-        options={{
-          headerShown: true,
-          headerTitleStyle: { color: "#212121", fontSize: 17 },
-          headerTitleAlign: "center",
-        }}
-        name="MapScreen"
-        component={MapScreen}
       />
     </ScreenStack.Navigator>
   );

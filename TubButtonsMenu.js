@@ -47,7 +47,7 @@ export const TubButtonsMenu = () => {
     >
       <Tab.Screen
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "Публикации",
           tabBarShowLabel: false,
           tabBarHideOnKeyboard: true,

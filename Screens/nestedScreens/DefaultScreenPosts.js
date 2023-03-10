@@ -14,46 +14,9 @@ import {
   Dimensions,
 } from "react-native";
 
-const POSTS = [
-  {
-    id: "1",
-    postImage: require("../assets/images/Forest.jpg"),
-    title: "Лес",
-    location: "Ivano-Frankivs'k Region, Ukraine",
-    comments: 8,
-    likes: 153,
-    userAvatar: require("../assets/images/Ellipse.png"),
-    text: "Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!",
-    data: "09 июня, 2020",
-    time: "08:40",
-  },
-  {
-    id: "2",
-    postImage: require("../assets/images/Sea.jpg"),
-    title: "Закат на Черном море",
-    location: "Ukraine",
-    comments: 3,
-    likes: 200,
-    userAvatar: require("../assets/images/UserIcon.jpg"),
-    text: "A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.",
-    data: "09 июня, 2020",
-    time: "04:14",
-  },
-  {
-    id: "3",
-    postImage: require("../assets/images/Italy.jpg"),
-    title: "Старый домик в Венеции",
-    location: "Italy",
-    comments: 50,
-    likes: 200,
-    userAvatar: require("../assets/images/Ellipse.png"),
-    text: "Thank you! That was very helpful!.",
-    data: "09 июня, 2020",
-    time: "09:20",
-  },
-];
-export default function ProfileScreen({ navigation }) {
-  const [posts, setPosts] = useState(POSTS);
+export default function DefaultScreenPosts({ navigation, route }) {
+  // console.log("params", route.params);
+  const [photo, setPhoto] = useState([]);
 
   const [windowWidth, setWindowWidth] = useState(
     Dimensions.get("window").width
@@ -80,64 +43,58 @@ export default function ProfileScreen({ navigation }) {
     prepare();
   }, []);
 
+  useEffect(() => {
+    if (route.params) {
+      setPhoto((prevState) => [...prevState, route.params]);
+    }
+  }, [route.params]);
+
+  // console.log("POST", photo);
+  // console.log("PO", photo.location);
+
   return (
     <View style={styles.container}>
       <FlatList
         ListHeaderComponent={
           <View style={styles.userSection}>
             <Image
-              style={{
-                ...styles.cardImage,
-                width: windowWidth - 16 * 2,
-              }}
-              // source={item.postImage}
-              source={require("../assets/images/Sea.jpg")}
+              style={styles.avatarImage}
+              source={require("../../assets/images/UserIcon.jpg")}
             />
+            <View style={styles.userInfo}>
+              <Text style={styles.textUserName}>Natali Romanova</Text>
+              <Text style={styles.textUserEmail}>email@example.com</Text>
+            </View>
           </View>
         }
-        data={posts}
+        data={photo}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View
             style={{
               ...styles.cardContainer,
               width: windowWidth,
-              paddingLeft: 16,
-              paddingRight: 16,
-              flexDirection: "column",
+              marginBottom: 91,
             }}
           >
-            <View
+            <Image
+              source={{ uri: item.post.photo }}
               style={{
-                flexDirection: "row",
+                ...styles.cardImage,
+                width: windowWidth - 16 * 2,
+              }}
+            />
+
+            <Text
+              style={{
+                ...styles.cardTitle,
+                width: windowWidth - 16 * 2,
               }}
             >
-              <Image
-                source={item.userAvatar}
-                style={{
-                  ...styles.cardImage,
-                  width: 28,
-                  height: 28,
-                  marginRight: 8,
-                }}
-              />
-              <View
-                style={{
-                  width: 200,
-                }}
-              >
-                <Text
-                  style={{
-                    ...styles.cardTitle,
-                    width: windowWidth - 16 * 2,
-                    fontFamily: "Roboto-Medium",
-                  }}
-                >
-                  {item.text}
-                </Text>
-              </View>
-            </View>
+              {item.post.title}
+            </Text>
 
-            {/* <View style={{ ...styles.cardThumb, width: windowWidth - 16 * 2 }}>
+            <View style={{ ...styles.cardThumb, width: windowWidth - 16 * 2 }}>
               <View
                 style={{
                   flexDirection: "row",
@@ -151,7 +108,7 @@ export default function ProfileScreen({ navigation }) {
                 >
                   <TouchableOpacity
                     style={styles.cardWrapper}
-                    // onPress={() => navigation.navigate("CommentsScreen")}
+                    onPress={() => navigation.navigate("CommentsScreen")}
                   >
                     <Feather
                       name="message-circle"
@@ -162,23 +119,26 @@ export default function ProfileScreen({ navigation }) {
                   </TouchableOpacity>
 
                   <View style={{ ...styles.cardWrapper, marginLeft: 56 }}>
-                    <Feather name="map-pin" size={24} color={"#BDBDBD"} />
-                    <Text style={styles.cardText}>{item.location}</Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("MapScreen", {
+                          latitude: item.post.location.latitude,
+                          longitude: item.post.location.longitude,
+                        })
+                      }
+                    >
+                      <Feather name="map-pin" size={24} color={"#BDBDBD"} />
+                    </TouchableOpacity>
+
+                    <Text style={styles.cardText}>
+                      {item.post.nameLocation}
+                    </Text>
                   </View>
                 </View>
               </View>
-            </View> */}
+            </View>
           </View>
         )}
-        keyExtractor={(item) => item.id}
-        // contentContainerStyle={{
-        //   flexGrow: 1,
-        //   alignItems: "center",
-
-        //   borderTopLeftRadius: 25,
-        //   borderTopRightRadius: 25,
-        // }}
-        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -186,9 +146,8 @@ export default function ProfileScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     backgroundColor: "#FFFFFF",
-    alignItems: "center",
   },
   userContainer: {
     flex: 1,
@@ -202,7 +161,6 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
-    // marginRight: 8,
   },
   imgUser: {
     width: 60,
@@ -219,17 +177,12 @@ const styles = StyleSheet.create({
   },
   profile: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     alignItems: "center",
   },
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
+
   imgUserContainer: {
     position: "absolute",
     top: -60,
@@ -269,20 +222,24 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   cardContainer: {
+    flex: 1,
+    width: 343,
+    height: 240,
     alignItems: "center",
     backgroundColor: "#FFFFFF",
   },
   cardImage: {
     resizeMode: "cover",
     borderRadius: 8,
-    width: 28,
-    height: 28,
+    width: 343,
+    height: 240,
   },
   cardTitle: {
     marginTop: 8,
     fontSize: 16,
     lineHeight: 19,
     color: "#212121",
+    fontFamily: "Roboto-Medium",
   },
   cardThumb: {
     flexDirection: "row",
@@ -329,10 +286,5 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     fontSize: 11,
     lineHeight: 13,
-  },
-  cardImage: {
-    resizeMode: "cover",
-    borderRadius: 8,
-    marginBottom: 32,
   },
 });

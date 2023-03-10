@@ -50,13 +50,6 @@ export default function CreatePostsScreen({ navigation }) {
     })();
   }, []);
 
-  // if (hasPermission === null) {
-  //   return <View />;
-  // }
-  // if (hasPermission === false) {
-  //   return <Text>No access to camera</Text>;
-  // }
-
   const keyboardHideOut = () => {
     setShowKeyboard(false);
     Keyboard.dismiss();
@@ -73,9 +66,10 @@ export default function CreatePostsScreen({ navigation }) {
           longitude: location.coords.longitude,
         };
         setLocation(coords);
-        // console.log("location", location);
+        console.log("location", location);
 
         setPhoto(uri);
+        console.log("photo", uri);
       } catch (e) {
         if (
           e.message.includes(
@@ -90,32 +84,8 @@ export default function CreatePostsScreen({ navigation }) {
           throw e;
         }
       }
-      // const { uri } = await camera.takePictureAsync();
-
-      // setPhoto(uri);
     }
   };
-
-  // if (hasPermission === null) {
-  //   // Camera permissions are still loading
-  //   return <View />;
-  // }
-  // if (hasPermission === false) {
-  //   return <Text>No access to camera</Text>;
-  // }
-
-  // if (!hasPermission.granted) {
-  //   //maybe not
-  //   // Camera permissions are not granted yet
-  //   return (
-  //     <View style={styles.permissionContainer}>
-  //       <Text style={{ textAlign: "center" }}>
-  //         We need your permission to show the camera
-  //       </Text>
-  //       <Button onPress={requestPermission} title="grant permission" />
-  //     </View>
-  //   );
-  // }
 
   const addPostBtn = () => {
     setShowKeyboard(false);
@@ -128,7 +98,7 @@ export default function CreatePostsScreen({ navigation }) {
       nameLocation,
     };
 
-    navigation.navigate("PostsScreen", { post });
+    navigation.navigate("DefaultScreen", { post });
     setPhoto(null);
     setTitle(null);
     setLocation(null);
@@ -256,8 +226,6 @@ export default function CreatePostsScreen({ navigation }) {
 const styles = StyleSheet.create({
   permissionContainer: {
     flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   container: {
     paddingTop: 32,
@@ -268,8 +236,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   camera: {
-    // width: "100%",
-    // maxWidth: 343,
     backgroundColor: "#F6F6F6",
     borderWidth: 1,
     borderColor: "#E8E8E8",
@@ -310,8 +276,6 @@ const styles = StyleSheet.create({
     top: 18,
   },
   button: {
-    // backgroundColor: "#F6F6F6",
-    // backgroundColor: "#FF6C00",
     borderRadius: 100,
     width: "100%",
     padding: 16,
@@ -322,7 +286,6 @@ const styles = StyleSheet.create({
   },
   textButton: {
     textAlign: "center",
-    // color: "#BDBDBD",
     fontSize: 16,
     fontFamily: "Roboto-Regular",
   },
