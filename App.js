@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
+
+import { Provider } from "react-redux";
 
 import { StyleSheet, View } from "react-native";
 
 import { useRout } from "./router";
+import { store } from "./redux/store";
 
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -12,7 +15,11 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 
+import db from "./firebase/config";
+
 export default function App() {
+  const [user, setUser] = useState(null);
+
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"), //400
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"), //700
@@ -27,14 +34,20 @@ export default function App() {
     return null;
   }
 
-  const routing = useRout(true);
+  db.auth().onAuthStateChanged((user) => {
+    setUser(user);
+  });
+
+  const routing = useRout(user);
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <NavigationContainer>{routing}</NavigationContainer>
+    <Provider store={store}>
+      <View style={styles.container} onLayout={onLayoutRootView}>
+        <NavigationContainer>{routing}</NavigationContainer>
 
-      <StatusBar style="auto" />
-    </View>
+        <StatusBar style="auto" />
+      </View>
+    </Provider>
   );
 }
 

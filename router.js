@@ -13,7 +13,7 @@ const MainStack = createStackNavigator();
 const ScreenStack = createStackNavigator();
 
 export const useRout = (isAuth) => {
-  return isAuth ? (
+  return !isAuth ? (
     <MainStack.Navigator initialRouteName="Login">
       <MainStack.Screen
         options={{ headerShown: false }}

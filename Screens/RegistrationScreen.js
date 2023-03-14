@@ -19,6 +19,10 @@ import {
   // ImageViewer,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+
+import { authSignUpUser } from "../redux/auth/authOperation";
+
 const initialState = {
   login: "",
   email: "",
@@ -32,6 +36,7 @@ export default function RegistrationScreen({ navigation }) {
   const [state, setState] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch();
   // const [selectedImage, setSelectedImage] = useState(null);
 
   const [windowWidth, setWindowWidth] = useState(
@@ -64,7 +69,8 @@ export default function RegistrationScreen({ navigation }) {
       return alert("Все поля должны быть заполнены!");
     }
 
-    console.log(state);
+    dispatch(authSignUpUser(state));
+
     setState(initialState);
 
     navigation.navigate("Home");

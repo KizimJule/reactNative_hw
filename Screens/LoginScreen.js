@@ -14,6 +14,9 @@ import {
   Dimensions,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../redux/auth/authOperation";
+
 const initialState = {
   email: "",
   password: "",
@@ -42,6 +45,7 @@ export default function LoginScreen({ navigation }) {
 
     return () => dimensionsHandler.remove();
   }, []);
+  const dispatch = useDispatch();
 
   const showPasswordHandler = () => {
     const toggle = showPassword ? false : true;
@@ -54,6 +58,7 @@ export default function LoginScreen({ navigation }) {
     if (!state.email.trim() || !state.password.trim()) {
       return alert("Все поля должны быть заполнены!");
     }
+    dispatch(authSignInUser(state));
     console.log(state);
     setState(initialState);
     navigation.navigate("Home");
