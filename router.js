@@ -39,7 +39,7 @@ export const useRout = (isAuth) => {
   ) : (
     <ScreenStack.Navigator>
       <ScreenStack.Screen
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
         name="Home"
         component={Home}
       />
