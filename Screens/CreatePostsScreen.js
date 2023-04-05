@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import {
   View,
   Text,
@@ -8,15 +9,16 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
-} from "react-native";
+} from 'react-native';
 
-import { useIsFocused } from "@react-navigation/native";
-import { Camera } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
-import * as Location from "expo-location";
+import { useIsFocused } from '@react-navigation/native';
+import { Camera } from 'expo-camera';
+import * as MediaLibrary from 'expo-media-library';
+import * as Location from 'expo-location';
+import bd from '../firebase/config';
 
-import { FontAwesome } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
+import { FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 export default function CreatePostsScreen({ navigation }) {
   const [showKeyboard, setShowKeyboard] = useState(false);
@@ -29,24 +31,26 @@ export default function CreatePostsScreen({ navigation }) {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [type, setType] = useState(Camera.Constants.Type.back);
 
+  const { userId, login } = useSelector(state => state.auth);
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
 
-      setHasPermission(status === "granted");
+      setHasPermission(status === 'granted');
     })();
   }, []);
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
         return;
       }
 
-      // let location = await Location.getCurrentPositionAsync({});
-      // setLocation(location);
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
     })();
   }, []);
 
@@ -66,20 +70,17 @@ export default function CreatePostsScreen({ navigation }) {
           longitude: location.coords.longitude,
         };
         setLocation(coords);
-        console.log("location", location);
+        // setLocation(location);
+        // console.log('location', location);
 
-        setPhoto(uri);
-        console.log("photo", uri);
+        // setPhoto(uri);
+        // console.log('photo', uri);
       } catch (e) {
-        if (
-          e.message.includes(
-            "Call to function 'ExponentCamera.takePicture' has been rejected"
-          )
-        ) {
+        if (e.message.includes("Call to function 'ExponentCamera.takePicture' has been rejected")) {
           await MediaLibrary.requestPermissionsAsync();
           await Camera.requestCameraPermissionsAsync();
           const { uri } = await camera.takePictureAsync();
-          setPhoto(uri);
+          // setPhoto(uri);
         } else {
           throw e;
         }
@@ -87,7 +88,35 @@ export default function CreatePostsScreen({ navigation }) {
     }
   };
 
+  //загружаем фото на сервер:
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+
+    const uniquePostId = Date.now().toString();
+
+    await bd.storage().ref(`postImage/${uniquePostId}`).put(file);
+
+    //ссылка на фото на сервере:
+    const processedPhoto = await bd.storage().ref('postImage').child(uniquePostId).getDownloadURL();
+    setPhoto(processedPhoto);
+    return processedPhoto;
+  };
+
+  const uploadPostToServer = async () => {
+    try {
+      const photo = await uploadPhotoToServer();
+      const createPost = await bd
+        .firestore()
+        .collection('posts')
+        .add({ photo, location, title, nameLocation, userId, login });
+    } catch (error) {
+      console.error('Error adding document: ', error);
+    }
+  };
+
   const addPostBtn = () => {
+    // uploadPhotoToServer();
     setShowKeyboard(false);
     Keyboard.dismiss();
     if (!photo) return;
@@ -97,8 +126,9 @@ export default function CreatePostsScreen({ navigation }) {
       title,
       nameLocation,
     };
-
-    navigation.navigate("DefaultScreen", { post });
+    // console.log(post);
+    uploadPostToServer();
+    navigation.navigate('DefaultScreen', { post });
     setPhoto(null);
     setTitle(null);
     setLocation(null);
@@ -109,7 +139,7 @@ export default function CreatePostsScreen({ navigation }) {
     (async () => {
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
-      setHasPermission(cameraStatus.status === "granted");
+      setHasPermission(cameraStatus.status === 'granted');
     })();
   }, []);
 
@@ -122,14 +152,14 @@ export default function CreatePostsScreen({ navigation }) {
           <Camera
             style={styles.camera}
             type={type}
-            ref={(ref) => {
+            ref={ref => {
               setCamera(ref);
             }}
           >
             {photo && (
               <View
                 style={{
-                  position: "absolute",
+                  position: 'absolute',
                   top: 0,
                   left: 0,
                   width: 100,
@@ -147,7 +177,7 @@ export default function CreatePostsScreen({ navigation }) {
             )}
 
             <TouchableOpacity onPress={takePhoto} style={styles.photoIcon}>
-              <FontAwesome name="camera" size={24} color={"#BDBDBD"} />
+              <FontAwesome name="camera" size={24} color={'#BDBDBD'} />
             </TouchableOpacity>
           </Camera>
         )}
@@ -166,23 +196,24 @@ export default function CreatePostsScreen({ navigation }) {
           <TextInput
             style={{ ...styles.input, paddingLeft: 0 }}
             placeholder="Название..."
-            placeholderTextColor={"#BDBDBD"}
+            placeholderTextColor={'#BDBDBD'}
             inputMode="text"
             value={title}
-            onChangeText={(value) => setTitle(value)}
+            onChangeText={value => setTitle(value)}
           />
           <View style={styles.inputBox}>
             <TouchableOpacity style={styles.inputIcon}>
-              <Feather name="map-pin" size={24} color={"#BDBDBD"} />
+              <Feather name="map-pin" size={24} color={'#BDBDBD'} />
             </TouchableOpacity>
 
             <TextInput
               style={{ ...styles.input, paddingLeft: 32 }}
               placeholder="Местность..."
-              placeholderTextColor={"#BDBDBD"}
+              placeholderTextColor={'#BDBDBD'}
               inputMode="text"
               value={nameLocation}
-              onChangeText={(value) => setNameLocation(value)}
+              onChangeText={value => setNameLocation(value)}
+              // onChangeText={setNameLocation}
             />
           </View>
 
@@ -191,13 +222,13 @@ export default function CreatePostsScreen({ navigation }) {
             onPress={addPostBtn}
             style={{
               ...styles.button,
-              backgroundColor: photo ? "#FF6C00" : "#F6F6F6",
+              backgroundColor: photo ? '#FF6C00' : '#F6F6F6',
             }}
           >
             <Text
               style={{
                 ...styles.textButton,
-                color: photo ? "#FFFFFF" : "#BDBDBD",
+                color: photo ? '#FFFFFF' : '#BDBDBD',
               }}
             >
               Опубликовать
@@ -211,11 +242,11 @@ export default function CreatePostsScreen({ navigation }) {
               setTitle(null);
               setNameLocation(null);
               // setLocation(null);
-              navigation.navigate("PostsScreen");
+              navigation.navigate('PostsScreen');
             }}
             style={styles.buttonGo}
           >
-            <Feather name="trash-2" size={24} color={"#BDBDBD"} />
+            <Feather name="trash-2" size={24} color={'#BDBDBD'} />
           </TouchableOpacity>
         </View>
       </View>
@@ -233,70 +264,70 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingBottom: 32,
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
   },
   camera: {
-    backgroundColor: "#F6F6F6",
+    backgroundColor: '#F6F6F6',
     borderWidth: 1,
-    borderColor: "#E8E8E8",
+    borderColor: '#E8E8E8',
     borderRadius: 8,
     marginBottom: 8,
     height: 240,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     // marginHorizontal: 16,
   },
   photoIcon: {
     width: 60,
     height: 60,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
     borderRadius: 50,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   addPhoto: {
-    fontFamily: "Roboto-Regular",
+    fontFamily: 'Roboto-Regular',
     fontSize: 16,
-    color: "#BDBDBD",
+    color: '#BDBDBD',
   },
   form: {
     marginTop: 40,
   },
   input: {
     borderBottomWidth: 1,
-    borderBottomColor: "#E8E8E8",
+    borderBottomColor: '#E8E8E8',
     marginBottom: 32,
     padding: 15,
   },
   inputBox: {
-    position: "relative",
+    position: 'relative',
   },
   inputIcon: {
-    position: "absolute",
+    position: 'absolute',
     top: 18,
   },
   button: {
     borderRadius: 100,
-    width: "100%",
+    width: '100%',
     padding: 16,
     maxWidth: 343,
     marginBottom: 100,
-    marginLeft: "auto",
-    marginRight: "auto",
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   textButton: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 16,
-    fontFamily: "Roboto-Regular",
+    fontFamily: 'Roboto-Regular',
   },
   buttonGo: {
-    backgroundColor: "#F6F6F6",
+    backgroundColor: '#F6F6F6',
     borderRadius: 100,
     width: 70,
     height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: "auto",
-    marginRight: "auto",
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 });

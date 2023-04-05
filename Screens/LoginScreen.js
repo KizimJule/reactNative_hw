@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useCallback } from "react";
+import React, { useState, useEffect } from 'react';
+import { useCallback } from 'react';
 import {
   StyleSheet,
   ImageBackground,
@@ -12,14 +12,14 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Dimensions,
-} from "react-native";
+} from 'react-native';
 
-import { useDispatch } from "react-redux";
-import { authSignInUser } from "../redux/auth/authOperation";
+import { useDispatch } from 'react-redux';
+import { authSignInUser } from '../redux/auth/authOperation';
 
 const initialState = {
-  email: "",
-  password: "",
+  email: '',
+  password: '',
 };
 
 export default function LoginScreen({ navigation }) {
@@ -28,20 +28,16 @@ export default function LoginScreen({ navigation }) {
   const [state, setState] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [windowWidth, setWindowWidth] = useState(
-    Dimensions.get("window").width
-  );
-  const [windowHeight, setWindowHeight] = useState(
-    Dimensions.get("window").height
-  );
+  const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
+  const [windowHeight, setWindowHeight] = useState(Dimensions.get('window').height);
   useEffect(() => {
     const onChange = () => {
-      const width = Dimensions.get("window").width;
+      const width = Dimensions.get('window').width;
       setWindowWidth(width);
-      const height = Dimensions.get("window").height;
+      const height = Dimensions.get('window').height;
       setWindowHeight(height);
     };
-    const dimensionsHandler = Dimensions.addEventListener("change", onChange);
+    const dimensionsHandler = Dimensions.addEventListener('change', onChange);
 
     return () => dimensionsHandler.remove();
   }, []);
@@ -52,16 +48,16 @@ export default function LoginScreen({ navigation }) {
     setShowPassword(toggle);
   };
 
-  const keyboardHide = () => {
+  const keyboardHide = async () => {
     setShowKeyboard(false);
     Keyboard.dismiss();
     if (!state.email.trim() || !state.password.trim()) {
-      return alert("Все поля должны быть заполнены!");
+      return alert('Все поля должны быть заполнены!');
     }
-    dispatch(authSignInUser(state));
-    console.log(state);
+    await dispatch(authSignInUser(state));
+    // console.log(state);
     setState(initialState);
-    navigation.navigate("Home");
+    // navigation.navigate("Home");
   };
 
   const keyboardHideOut = () => {
@@ -73,7 +69,7 @@ export default function LoginScreen({ navigation }) {
     <TouchableWithoutFeedback onPress={keyboardHideOut}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../assets/images/PhotoBG.jpg")}
+          source={require('../assets/images/PhotoBG.jpg')}
           resizeMode="cover"
           style={{
             ...styles.imageBG,
@@ -81,9 +77,7 @@ export default function LoginScreen({ navigation }) {
             height: windowHeight,
           }}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
-          >
+          <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
             <View
               style={{
                 ...styles.form,
@@ -96,17 +90,15 @@ export default function LoginScreen({ navigation }) {
               <TextInput
                 style={{
                   ...styles.input,
-                  borderColor: focusedInput === "email" ? "#ff6c00" : "#e8e8e8",
+                  borderColor: focusedInput === 'email' ? '#ff6c00' : '#e8e8e8',
                 }}
                 placeholder="Адрес электронной почты"
-                placeholderTextColor={"#BDBDBD"}
+                placeholderTextColor={'#BDBDBD'}
                 inputMode="email"
                 value={state.email}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, email: value }))
-                }
+                onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
                 onFocus={() => {
-                  setFocusedInput("email");
+                  setFocusedInput('email');
                   setShowKeyboard(true);
                 }}
                 onBlur={() => setFocusedInput(null)}
@@ -115,18 +107,15 @@ export default function LoginScreen({ navigation }) {
                 <TextInput
                   style={{
                     ...styles.input,
-                    borderColor:
-                      focusedInput === "password" ? "#ff6c00" : "#e8e8e8",
+                    borderColor: focusedInput === 'password' ? '#ff6c00' : '#e8e8e8',
                   }}
                   placeholder="Пароль"
-                  placeholderTextColor={"#BDBDBD"}
+                  placeholderTextColor={'#BDBDBD'}
                   secureTextEntry={!showPassword}
                   value={state.password}
-                  onChangeText={(value) =>
-                    setState((prevState) => ({ ...prevState, password: value }))
-                  }
+                  onChangeText={value => setState(prevState => ({ ...prevState, password: value }))}
                   onFocus={() => {
-                    setFocusedInput("password");
+                    setFocusedInput('password');
                     setShowKeyboard(true);
                   }}
                   onBlur={() => {
@@ -142,21 +131,12 @@ export default function LoginScreen({ navigation }) {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={keyboardHide}
-                style={styles.button}
-              >
+              <TouchableOpacity activeOpacity={0.8} onPress={keyboardHide} style={styles.button}>
                 <Text style={styles.textButton}>Войти</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => navigation.navigate("Register")}
-              >
-                <Text style={styles.accountText}>
-                  Нет аккаунта? Зарегистрироваться
-                </Text>
+              <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.accountText}>Нет аккаунта? Зарегистрироваться</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
@@ -169,28 +149,28 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   imageBG: {
     flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
+    resizeMode: 'cover',
+    justifyContent: 'flex-end',
   },
   image: {
     flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
-    alignItems: "center",
+    resizeMode: 'cover',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   form: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    width: "100%",
-    position: "absolute",
+    width: '100%',
+    position: 'absolute',
     bottom: 0,
     paddingTop: 32,
     paddingLeft: 16,
@@ -198,21 +178,21 @@ const styles = StyleSheet.create({
     paddingBottom: 132,
   },
   titleText: {
-    fontWeight: "500",
-    color: "#212121",
+    fontWeight: '500',
+    color: '#212121',
     fontSize: 30,
-    fontFamily: "Roboto-Medium",
-    textAlign: "center",
+    fontFamily: 'Roboto-Medium',
+    textAlign: 'center',
     marginBottom: 33,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#E8E8E8",
+    borderColor: '#E8E8E8',
     padding: 16,
-    width: "100%",
-    color: "#212121",
+    width: '100%',
+    color: '#212121',
     fontSize: 16,
-    backgroundColor: "#F6F6F6",
+    backgroundColor: '#F6F6F6',
     marginBottom: 16,
     maxWidth: 343,
   },
@@ -221,34 +201,34 @@ const styles = StyleSheet.create({
     left: 124,
   },
   passwShowText: {
-    color: "#1B4371",
+    color: '#1B4371',
     fontSize: 16,
-    fontFamily: "Roboto-Regular",
+    fontFamily: 'Roboto-Regular',
     lineHeight: 18.75,
   },
   button: {
-    backgroundColor: "#FF6C00",
+    backgroundColor: '#FF6C00',
     borderRadius: 100,
-    width: "100%",
+    width: '100%',
     padding: 16,
     marginTop: 27,
     marginBottom: 16,
     maxWidth: 343,
   },
   textButton: {
-    textAlign: "center",
-    color: "#fff",
+    textAlign: 'center',
+    color: '#fff',
     fontSize: 16,
-    fontFamily: "Roboto-Regular",
+    fontFamily: 'Roboto-Regular',
   },
   accountText: {
-    color: "#1B4371",
+    color: '#1B4371',
     fontSize: 16,
-    fontFamily: "Roboto-Regular",
+    fontFamily: 'Roboto-Regular',
   },
   inputPasswContainer: {
-    width: "100%",
-    position: "relative",
-    alignItems: "center",
+    width: '100%',
+    position: 'relative',
+    alignItems: 'center',
   },
 });

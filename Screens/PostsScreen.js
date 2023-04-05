@@ -1,9 +1,9 @@
-import React from "react";
-import { moduleName } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
-import DefaultScreenPosts from "./nestedScreens/DefaultScreenPosts";
-import CommentsScreen from "./nestedScreens/CommentsScreen";
-import MapScreen from "./nestedScreens/MapScreen";
+import React from 'react';
+import { moduleName } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import DefaultScreenPosts from './nestedScreens/DefaultScreenPosts';
+import CommentsScreen from './nestedScreens/CommentsScreen';
+import MapScreen from './nestedScreens/MapScreen';
 
 const NestedScreen = createStackNavigator();
 
@@ -15,18 +15,18 @@ const PostsScreen = () => {
         component={DefaultScreenPosts}
         options={{
           // headerShown: false,
-          headerTitle: "Публикации",
-          headerTitleStyle: { color: "#212121", fontSize: 17 },
-          headerTitleAlign: "center",
+          headerTitle: 'Публикации',
+          headerTitleStyle: { color: '#212121', fontSize: 17 },
+          headerTitleAlign: 'center',
         }}
       />
       <NestedScreen.Screen
         name="CommentsScreen"
         component={CommentsScreen}
         options={{
-          headerTitle: "Комментарии",
-          headerTitleStyle: { color: "#212121", fontSize: 17 },
-          headerTitleAlign: "center",
+          headerTitle: 'Комментарии',
+          headerTitleStyle: { color: '#212121', fontSize: 17 },
+          headerTitleAlign: 'center',
         }}
       />
       <NestedScreen.Screen
