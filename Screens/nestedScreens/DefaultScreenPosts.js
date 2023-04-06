@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import * as SplashScreen from 'expo-splash-screen';
 
-import bd from '../../firebase/config';
-
 import { Feather } from '@expo/vector-icons';
 
+import db from '../../firebase/config';
 import {
   StyleSheet,
   Text,
@@ -42,7 +41,7 @@ export default function DefaultScreenPosts({ navigation, route }) {
 
   const getDataFromFirestore = async () => {
     try {
-      await bd
+      await db
         .firestore()
         .collection('posts')
         .onSnapshot(data => setPhoto(data.docs.map(doc => ({ ...doc.data(), id: doc.id }))));
@@ -54,8 +53,8 @@ export default function DefaultScreenPosts({ navigation, route }) {
     getDataFromFirestore();
   }, []);
 
-  console.log(photo);
-  ``;
+  // console.log(photo);
+
   return (
     <View style={styles.container}>
       <FlatList

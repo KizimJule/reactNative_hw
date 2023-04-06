@@ -170,7 +170,7 @@ export default function CommentsScreen({ navigation, route }) {
         //   </View>
         // }
       />
-      <View style={{ width: '100%', marginBottom: 12 }}>
+      <View style={{ width: '100%', marginBottom: 12, alignItems: 'flex-end' }}>
         <TextInput
           value={comment}
           style={styles.input}

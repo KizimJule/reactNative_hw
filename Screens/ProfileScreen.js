@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as SplashScreen from 'expo-splash-screen';
@@ -7,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Feather } from '@expo/vector-icons';
 
 import db from '../firebase/config';
+
 import { authSignOutUser } from '../redux/auth/authOperation';
 
 import {
@@ -18,41 +18,12 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
-  Button,
 } from 'react-native';
-
-// const POSTS = [
-//   {
-//     id: '1',
-//     postImage: require('../assets/images/Forest.jpg'),
-//     title: 'Лес',
-//     location: 'Ukraine',
-//     comments: 8,
-//     likes: 153,
-//   },
-//   {
-//     id: '2',
-//     postImage: require('../assets/images/Sea.jpg'),
-//     title: 'Закат на Черном море',
-//     location: 'Ukraine',
-//     comments: 3,
-//     likes: 200,
-//   },
-//   {
-//     id: '3',
-//     postImage: require('../assets/images/Italy.jpg'),
-//     title: 'Старый домик в Венеции',
-//     location: 'Italy',
-//     comments: 50,
-//     likes: 200,
-//   },
-// ];
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const { userId } = useSelector(state => state.auth);
   const [userImg, setUserImg] = useState(1);
-  // const [posts, setPosts] = useState(POSTS);
   const [posts, setPosts] = useState([]);
 
   const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
@@ -87,7 +58,7 @@ export default function ProfileScreen({ navigation }) {
         .firestore()
         .collection('posts')
         .where('userId', '==', userId)
-        .onSnapshot(data => setPosts(data.docs.map(doc => ({ ...doc.data() }))));
+        .onSnapshot(data => setPosts(data.docs.map(doc => ({ ...doc.data(), id: doc.id }))));
     } catch (error) {
       console.log(error);
     }
@@ -166,6 +137,7 @@ export default function ProfileScreen({ navigation }) {
             </View>
           }
           data={posts}
+          // keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View
               style={{
@@ -204,7 +176,12 @@ export default function ProfileScreen({ navigation }) {
                   >
                     <TouchableOpacity
                       style={styles.cardWrapper}
-                      onPress={() => navigation.navigate('CommentsScreen')}
+                      onPress={() =>
+                        navigation.navigate('CommentsScreen', {
+                          postId: item.id,
+                          photo: item.photo,
+                        })
+                      }
                     >
                       <Feather name="message-circle" size={24} color={'#FF6C00'} />
                       <Text style={styles.cardText}>{item.comments}</Text>
