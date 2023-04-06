@@ -73,14 +73,14 @@ export default function CreatePostsScreen({ navigation }) {
         // setLocation(location);
         // console.log('location', location);
 
-        // setPhoto(uri);
+        setPhoto(uri);
         // console.log('photo', uri);
       } catch (e) {
         if (e.message.includes("Call to function 'ExponentCamera.takePicture' has been rejected")) {
           await MediaLibrary.requestPermissionsAsync();
           await Camera.requestCameraPermissionsAsync();
           const { uri } = await camera.takePictureAsync();
-          // setPhoto(uri);
+          setPhoto(uri);
         } else {
           throw e;
         }
@@ -121,10 +121,15 @@ export default function CreatePostsScreen({ navigation }) {
     Keyboard.dismiss();
     if (!photo) return;
     const post = {
+      userId,
+      login,
       photo,
       location,
       title,
       nameLocation,
+      commentsQuantity: 0,
+      likesQuantity: 0,
+      likeStatus: false,
     };
     // console.log(post);
     uploadPostToServer();

@@ -1,45 +1,49 @@
-import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import React from 'react';
+import { View, TouchableOpacity } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 //import icons
-import { AntDesign } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import { Fontisto } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+import { AntDesign } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
 
-import CreatePostsScreen from "./Screens/CreatePostsScreen";
-import ProfileScreen from "./Screens/ProfileScreen";
-import PostsScreen from "./Screens/PostsScreen";
+import CreatePostsScreen from './Screens/CreatePostsScreen';
+import ProfileScreen from './Screens/ProfileScreen';
+import PostsScreen from './Screens/PostsScreen';
+import { authSignOutUser } from './redux/auth/authOperation';
 
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
-export const TubButtonsMenu = () => {
+export const TubButtonsMenu = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarShowLabel: false,
         tabBarStyle: {
-          height: 71,
-          justifyContent: "center",
+          height: 63,
+          justifyContent: 'center',
           paddingLeft: 80,
           paddingRight: 80,
         },
-        headerTitleAlign: "center",
-        headerStyle: { height: 88 },
+        headerTitleAlign: 'center',
+        headerStyle: { height: 68 },
         headerShadowVisible: {
           elevation: 1,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "#000000",
+          backgroundColor: '#FFFFFF',
+          shadowColor: '#000000',
           shadowOffset: { width: 0, height: 0.5 },
           shadowOpacity: 0.3,
           shadowRadius: 27.18,
         },
         headerTitleStyle: {
-          fontFamily: "Roboto-Medium",
+          fontFamily: 'Roboto-Medium',
           marginBottom: 11,
           fontSize: 17,
           lineHeight: 22,
-          color: "#212121",
+          color: '#212121',
         },
         headerRightContainerStyle: { paddingRight: 16, paddingBottom: 9 },
         headerLeftContainerStyle: { paddingLeft: 16, paddingBottom: 9 },
@@ -47,20 +51,22 @@ export const TubButtonsMenu = () => {
     >
       <Tab.Screen
         options={{
-          headerShown: false,
-          title: "Публикации",
+          headerShown: true,
+          title: 'Публикации',
           tabBarShowLabel: false,
           tabBarHideOnKeyboard: true,
           tabBarIcon: ({ focused, size, color }) => (
-            <AntDesign
-              name="appstore-o"
-              size={24}
-              color={"rgba(33, 33, 33, 0.8)"}
-            />
+            <View>
+              <AntDesign name="appstore-o" size={24} color={'rgba(33, 33, 33, 0.8)'} />
+            </View>
           ),
           headerRight: ({ focused, size, color }) => (
-            <TouchableOpacity onPress={() => console.log("you press logout")}>
-              <Entypo name="log-out" size={24} color={"#BDBDBD"} />
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(authSignOutUser());
+              }}
+            >
+              <Feather name="log-out" size={24} color={'#BDBDBD'} />
             </TouchableOpacity>
           ),
         }}
@@ -69,20 +75,25 @@ export const TubButtonsMenu = () => {
       />
       <Tab.Screen
         options={{
-          title: "Создать публикацию",
+          title: 'Создать публикацию',
           headerLeft: ({ focused, size, color }) => (
-            <TouchableOpacity onPress={() => console.log("you press go-back")}>
-              <Feather name="arrow-left" size={24} color={"#BDBDBD"} />
+            <TouchableOpacity
+              onPress={() => {
+                // navigation.goBack();
+                console.log('you press go-back');
+              }}
+            >
+              <Feather name="arrow-left" size={24} color={'#BDBDBD'} />
             </TouchableOpacity>
           ),
           tabBarShowLabel: false,
           tabBarHideOnKeyboard: true,
-          tabBarStyle: { display: "none" },
+          tabBarStyle: { display: 'none' },
           tabBarIcon: ({ focused, size, color }) => (
             <View
               style={{
-                alignItems: "center",
-                backgroundColor: "#FF6C00",
+                alignItems: 'center',
+                backgroundColor: '#FF6C00',
                 width: 70,
                 height: 40,
                 padding: 13.5,
@@ -99,11 +110,11 @@ export const TubButtonsMenu = () => {
       <Tab.Screen
         options={{
           headerShown: false,
-          title: "Profile",
+          title: 'Profile',
           tabBarShowLabel: false,
           tabBarHideOnKeyboard: true,
           tabBarIcon: ({ focused, size, color }) => (
-            <Feather name="user" size={24} color={"rgba(33, 33, 33, 0.8)"} />
+            <Feather name="user" size={24} color={'rgba(33, 33, 33, 0.8)'} />
           ),
         }}
         name="ProfileScreen"

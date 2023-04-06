@@ -22,10 +22,11 @@ import {
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  const { userId } = useSelector(state => state.auth);
+  const { userId, login, avatarImage } = useSelector(state => state.auth);
+
   const [userImg, setUserImg] = useState(1);
   const [posts, setPosts] = useState([]);
-
+  console.log(posts);
   const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
   const [windowHeight, setWindowHeight] = useState(Dimensions.get('window').height);
 
@@ -51,7 +52,7 @@ export default function ProfileScreen({ navigation }) {
     // navigation.navigate('Register');
     dispatch(authSignOutUser());
   };
-
+  console.log(userId);
   const getDataFromFirestore = async () => {
     try {
       await db
@@ -115,10 +116,7 @@ export default function ProfileScreen({ navigation }) {
                   <Image width={25} height={25} source={require('../assets/images/del.png')} />
                 </TouchableOpacity>
                 {userImg === 1 ? (
-                  <Image
-                    style={styles.avatarImage}
-                    source={require('../assets/images/UserIcon.jpg')}
-                  />
+                  <Image style={styles.avatarImage} source={{ uri: avatarImage }} />
                 ) : null}
               </View>
               <View style={{ position: 'absolute', right: 16, top: 22 }}>
@@ -130,14 +128,12 @@ export default function ProfileScreen({ navigation }) {
                   width: windowWidth - 16 * 2,
                 }}
               >
-                <Text style={{ ...styles.userTitle, fontFamily: 'Roboto-Medium' }}>
-                  Natali Romanova
-                </Text>
+                <Text style={{ ...styles.userTitle, fontFamily: 'Roboto-Medium' }}>{login}</Text>
               </View>
             </View>
           }
           data={posts}
-          // keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View
               style={{
@@ -211,7 +207,7 @@ export default function ProfileScreen({ navigation }) {
               </View>
             </View>
           )}
-          keyExtractor={item => item.id}
+          // keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
         />
       </ImageBackground>

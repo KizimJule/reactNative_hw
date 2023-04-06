@@ -19,12 +19,10 @@ import {
 import { useDispatch } from 'react-redux';
 
 import { authSignUpUser } from '../redux/auth/authOperation';
+import * as ImagePicker from 'expo-image-picker';
 
-const initialState = {
-  login: '',
-  email: '',
-  password: '',
-};
+import db from '../firebase/config';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function RegistrationScreen({ navigation }) {
   const [focusedInput, setFocusedInput] = useState(null);
@@ -32,6 +30,11 @@ export default function RegistrationScreen({ navigation }) {
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [pickedImagePath, setPickedImagePath] = useState('');
+  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
 
@@ -53,20 +56,72 @@ export default function RegistrationScreen({ navigation }) {
     const toggle = showPassword ? false : true;
     setShowPassword(toggle);
   };
-  const keyboardHide = () => {
+
+  const keyboardHide = async () => {
     setShowKeyboard(false);
     Keyboard.dismiss();
 
-    if (state.login === '' || state.email === '' || state.password === '') {
+    if (login === '' || email === '' || password === '' || pickedImagePath === '') {
       return alert('Все поля должны быть заполнены!');
     }
 
-    dispatch(authSignUpUser(state));
+    const imageRef = await uploadPhotoToServer();
+    const newUser = {
+      avatarImage: imageRef,
+      login,
+      email,
+      password,
+    };
+    dispatch(authSignUpUser(newUser));
 
-    setState(initialState);
-
-    navigation.navigate('Home');
+    setLogin('');
+    setEmail('');
+    setPassword('');
+    setPickedImagePath('');
+    // navigation.navigate('Home');
   };
+
+  const downloadAvatar = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        alert("You've refused to allow this app to access your photos!");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setPickedImagePath(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.log('error-message', error.message);
+    }
+  };
+
+  const deleteAvatar = () => setPickedImagePath('');
+
+  const uploadPhotoToServer = async () => {
+    try {
+      const response = await fetch(pickedImagePath);
+      const file = await response.blob();
+      const storage = getStorage();
+      const uniquePostId = Date.now().toString();
+      const storageRef = ref(storage, `avatarImage/${uniquePostId}`);
+      await uploadBytes(storageRef, file);
+      const photoRef = await getDownloadURL(storageRef);
+      return photoRef;
+    } catch (error) {
+      console.log('error-message.upload-photo', error.message);
+    }
+  };
+
   const keyboardHideOut = () => {
     setShowKeyboard(false);
     Keyboard.dismiss();
@@ -87,10 +142,43 @@ export default function RegistrationScreen({ navigation }) {
           <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
             <View style={{ ...styles.form, marginBottom: showKeyboard ? -192 : 0 }}>
               <View style={styles.imgUserContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setUserImg(1);
-                  }}
+                {pickedImagePath ? (
+                  <>
+                    <View>
+                      <Image style={styles.avatarImage} source={{ uri: pickedImagePath }} />
+                    </View>
+                    <TouchableOpacity
+                      onPress={deleteAvatar}
+                      style={{
+                        ...styles.imgDel,
+                      }}
+                    >
+                      <Image width={25} height={25} source={require('../assets/images/del.png')} />
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <>
+                    <View
+                    // style={{
+                    //   ...styles.imageThumb,
+                    //   left: (windowWidth - 120) / 2,
+                    // }}
+                    ></View>
+                    <TouchableOpacity
+                      onPress={downloadAvatar}
+                      style={{
+                        ...styles.imgAdd,
+                      }}
+                    >
+                      <Image width={25} height={25} source={require('../assets/images/add.png')} />
+                    </TouchableOpacity>
+                  </>
+                )}
+
+                {/* <TouchableOpacity
+                  // onPress={() => {
+                  //   setUserImg(1);
+                  // }}
                   activeOpacity={0.8}
                   style={{
                     ...styles.imgAdd,
@@ -98,12 +186,12 @@ export default function RegistrationScreen({ navigation }) {
                   }}
                 >
                   <Image width={25} height={25} source={require('../assets/images/add.png')} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
-                <TouchableOpacity
-                  onPress={() => {
-                    setUserImg(null);
-                  }}
+                {/* <TouchableOpacity
+                  // onPress={() => {
+                  //   setUserImg(null);
+                  // }}
                   activeOpacity={0.8}
                   style={{
                     ...styles.imgDel,
@@ -111,11 +199,11 @@ export default function RegistrationScreen({ navigation }) {
                   }}
                 >
                   <Image width={25} height={25} source={require('../assets/images/del.png')} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
-                {userImg === 1 ? (
+                {/* {userImg === 1 ? (
                   <Image style={styles.imgUser} source={require('../assets/images/UserIcon.jpg')} />
-                ) : null}
+                ) : null} */}
               </View>
 
               <Text style={styles.titleText}>Регистрация</Text>
@@ -127,8 +215,10 @@ export default function RegistrationScreen({ navigation }) {
                 placeholder="Логин"
                 placeholderTextColor={'#BDBDBD'}
                 inputMode="text"
-                value={state.login}
-                onChangeText={value => setState(prevState => ({ ...prevState, login: value }))}
+                // value={state.login}
+                value={login}
+                // onChangeText={value => setState(prevState => ({ ...prevState, login: value }))}
+                onChangeText={login => setLogin(login)}
                 onFocus={() => {
                   setFocusedInput('login');
                   setShowKeyboard(true);
@@ -143,8 +233,11 @@ export default function RegistrationScreen({ navigation }) {
                 placeholder="Адрес электронной почты"
                 placeholderTextColor={'#BDBDBD'}
                 inputMode="email"
-                value={state.email}
-                onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
+                // value={state.email}
+                // onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
+
+                value={email}
+                onChangeText={email => setEmail(email)}
                 onFocus={() => {
                   setFocusedInput('email');
                   setShowKeyboard(true);
@@ -160,8 +253,10 @@ export default function RegistrationScreen({ navigation }) {
                   placeholder="Пароль"
                   placeholderTextColor={'#BDBDBD'}
                   secureTextEntry={!showPassword}
-                  value={state.password}
-                  onChangeText={value => setState(prevState => ({ ...prevState, password: value }))}
+                  // value={state.password}
+                  // onChangeText={value => setState(prevState => ({ ...prevState, password: value }))}
+                  value={password}
+                  onChangeText={password => setPassword(password)}
                   onFocus={() => {
                     setFocusedInput('password');
                     setShowKeyboard(true);
@@ -307,5 +402,26 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     resizeMode: 'cover',
+  },
+
+  imageThumb: {
+    top: -60,
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    backgroundColor: '#F6F6F6',
+    borderRadius: 16,
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 16,
+    resizeMode: 'cover',
+  },
+  addButton: {
+    position: 'absolute',
+    top: 21,
+    width: 25,
+    height: 25,
   },
 });

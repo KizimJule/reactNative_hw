@@ -14,7 +14,7 @@ const PostsScreen = () => {
         name="DefaultScreen"
         component={DefaultScreenPosts}
         options={{
-          // headerShown: false,
+          headerShown: false,
           headerTitle: 'Публикации',
           headerTitleStyle: { color: '#212121', fontSize: 17 },
           headerTitleAlign: 'center',

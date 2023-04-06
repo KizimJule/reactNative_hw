@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -13,6 +14,7 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
+  Message,
 } from 'react-native';
 
 export default function DefaultScreenPosts({ navigation, route }) {
@@ -55,18 +57,17 @@ export default function DefaultScreenPosts({ navigation, route }) {
 
   // console.log(photo);
 
+  const { login, email, avatarImage } = useSelector(state => state.auth);
+
   return (
     <View style={styles.container}>
       <FlatList
         ListHeaderComponent={
           <View style={styles.userSection}>
-            <Image
-              style={styles.avatarImage}
-              source={require('../../assets/images/UserIcon.jpg')}
-            />
+            <Image style={styles.avatarImage} source={{ uri: avatarImage }} />
             <View style={styles.userInfo}>
-              <Text style={styles.textUserName}>Natali Romanova</Text>
-              <Text style={styles.textUserEmail}>email@example.com</Text>
+              <Text style={styles.textUserName}>{login}</Text>
+              <Text style={styles.textUserEmail}>{email}</Text>
             </View>
           </View>
         }
@@ -112,11 +113,15 @@ export default function DefaultScreenPosts({ navigation, route }) {
                   <TouchableOpacity
                     style={styles.cardWrapper}
                     onPress={() =>
-                      navigation.navigate('CommentsScreen', { postId: item.id, photo: item.photo })
+                      navigation.navigate('CommentsScreen', {
+                        postId: item.id,
+                        photo: item.photo,
+                        commentsQuantity: item.commentsQuantity,
+                      })
                     }
                   >
                     <Feather name="message-circle" size={24} color={'#BDBDBD'} />
-                    <Text style={styles.cardText}>{item.comments}</Text>
+                    <Text style={styles.cardText}>{item.commentsQuantity}</Text>
                   </TouchableOpacity>
 
                   <View style={{ ...styles.cardWrapper, marginLeft: 56 }}>

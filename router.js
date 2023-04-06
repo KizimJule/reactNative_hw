@@ -21,25 +21,16 @@ export const useRout = isAuth => {
         name="Register"
         component={RegistrationScreen}
       />
-      {/* <MainStack.Screen
-        options={{
-          headerShown: false,
-          headerTitleStyle: { color: '#212121', fontSize: 17 },
-          headerTitleAlign: 'center',
-        }}
-        name="Home"
-        component={Home}
-      /> */}
     </MainStack.Navigator>
   ) : (
     <ScreenStack.Navigator initialRouteName="Home">
       <ScreenStack.Screen options={{ headerShown: false }} name="Home" component={Home} />
       <ScreenStack.Screen options={{ headerShown: true }} name="Posts" component={PostsScreen} />
-      <ScreenStack.Screen
+      {/* <ScreenStack.Screen
         options={{ headerShown: true }}
         name="CreatePostsScreen"
         component={CreatePostsScreen}
-      />
+      /> */}
     </ScreenStack.Navigator>
   );
 };

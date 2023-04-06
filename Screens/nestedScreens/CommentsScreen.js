@@ -19,45 +19,8 @@ import {
 
 import db from '../../firebase/config';
 
-const POST_COMMENT = [
-  {
-    id: '2',
-    postImage: require('../../assets/images/Sea.jpg'),
-    title: 'Закат на Черном море',
-    location: 'Ukraine',
-    comments: 3,
-    likes: 200,
-    commentsTotal: 3,
-    comments: [
-      {
-        id: '1',
-        userAvatar: require('../../assets/images/Ellipse.png'),
-        text: 'Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!',
-        data: '09 июня, 2020',
-        time: '08:40',
-      },
-      {
-        id: '2',
-        userAvatar: require('../../assets/images/UserIcon.jpg'),
-        text: 'A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.',
-        data: '09 июня, 2020',
-        time: '04:14',
-      },
-      {
-        id: '3',
-        userAvatar: require('../../assets/images/Ellipse.png'),
-        text: 'Thank you! That was very helpful!.',
-        data: '09 июня, 2020',
-        time: '09:20',
-      },
-    ],
-  },
-];
-
 export default function CommentsScreen({ navigation, route }) {
-  const { postId, photo } = route.params;
-
-  const [posts, setPosts] = useState(POST_COMMENT);
+  const { postId, photo, commentsQuantity } = route.params;
 
   const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
   const [windowHeight, setWindowHeight] = useState(Dimensions.get('window').height);
@@ -79,9 +42,11 @@ export default function CommentsScreen({ navigation, route }) {
     }
     prepare();
   }, []);
+
   const [comment, setComment] = useState('');
   const [allComments, setAllComments] = useState([]);
   const { login } = useSelector(state => state.auth);
+
   const commentHandler = comment => setComment(comment);
 
   const onSend = async () => {
@@ -118,7 +83,7 @@ export default function CommentsScreen({ navigation, route }) {
   useEffect(() => {
     getCommentsFromFirestore();
   }, []);
-  console.log(allComments);
+  console.log(allComments.length);
   return (
     <View style={{ ...styles.container }}>
       <FlatList
