@@ -78,7 +78,7 @@ export default function RegistrationScreen({ navigation }) {
     setEmail('');
     setPassword('');
     setPickedImagePath('');
-    // navigation.navigate('Home');
+
   };
 
   const downloadAvatar = async () => {
@@ -159,10 +159,7 @@ export default function RegistrationScreen({ navigation }) {
                 ) : (
                   <>
                     <View
-                    // style={{
-                    //   ...styles.imageThumb,
-                    //   left: (windowWidth - 120) / 2,
-                    // }}
+                    
                     ></View>
                     <TouchableOpacity
                       onPress={downloadAvatar}
@@ -175,35 +172,7 @@ export default function RegistrationScreen({ navigation }) {
                   </>
                 )}
 
-                {/* <TouchableOpacity
-                  // onPress={() => {
-                  //   setUserImg(1);
-                  // }}
-                  activeOpacity={0.8}
-                  style={{
-                    ...styles.imgAdd,
-                    display: userImg === 1 ? 'none' : 'flex',
-                  }}
-                >
-                  <Image width={25} height={25} source={require('../assets/images/add.png')} />
-                </TouchableOpacity> */}
-
-                {/* <TouchableOpacity
-                  // onPress={() => {
-                  //   setUserImg(null);
-                  // }}
-                  activeOpacity={0.8}
-                  style={{
-                    ...styles.imgDel,
-                    display: userImg === null ? 'none' : 'flex',
-                  }}
-                >
-                  <Image width={25} height={25} source={require('../assets/images/del.png')} />
-                </TouchableOpacity> */}
-
-                {/* {userImg === 1 ? (
-                  <Image style={styles.imgUser} source={require('../assets/images/UserIcon.jpg')} />
-                ) : null} */}
+           
               </View>
 
               <Text style={styles.titleText}>Регистрация</Text>
@@ -215,9 +184,9 @@ export default function RegistrationScreen({ navigation }) {
                 placeholder="Логин"
                 placeholderTextColor={'#BDBDBD'}
                 inputMode="text"
-                // value={state.login}
+           
                 value={login}
-                // onChangeText={value => setState(prevState => ({ ...prevState, login: value }))}
+            
                 onChangeText={login => setLogin(login)}
                 onFocus={() => {
                   setFocusedInput('login');
@@ -233,10 +202,7 @@ export default function RegistrationScreen({ navigation }) {
                 placeholder="Адрес электронной почты"
                 placeholderTextColor={'#BDBDBD'}
                 inputMode="email"
-                // value={state.email}
-                // onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
-
-                value={email}
+                           value={email}
                 onChangeText={email => setEmail(email)}
                 onFocus={() => {
                   setFocusedInput('email');
@@ -253,9 +219,7 @@ export default function RegistrationScreen({ navigation }) {
                   placeholder="Пароль"
                   placeholderTextColor={'#BDBDBD'}
                   secureTextEntry={!showPassword}
-                  // value={state.password}
-                  // onChangeText={value => setState(prevState => ({ ...prevState, password: value }))}
-                  value={password}
+                              value={password}
                   onChangeText={password => setPassword(password)}
                   onFocus={() => {
                     setFocusedInput('password');

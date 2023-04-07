@@ -20,7 +20,7 @@ import {
 import db from '../../firebase/config';
 
 export default function CommentsScreen({ navigation, route }) {
-  const { postId, photo, commentsQuantity } = route.params;
+  const { postId, photo, commentsQuantity, avatarImage } = route.params;
 
   const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
   const [windowHeight, setWindowHeight] = useState(Dimensions.get('window').height);
@@ -57,11 +57,12 @@ export default function CommentsScreen({ navigation, route }) {
     const date = new Date().toLocaleDateString();
     const time = new Date().toLocaleTimeString();
 
-    db.firestore()
-      .collection('posts')
-      .doc(postId)
-      .collection('comments')
-      .add({ comment, login, date, time });
+    db.firestore().collection('posts').doc(postId).collection('comments').add({
+      comment,
+      login,
+      date,
+      time,
+    });
 
     Alert.alert(`Your comment has been sent!`);
 
@@ -83,7 +84,7 @@ export default function CommentsScreen({ navigation, route }) {
   useEffect(() => {
     getCommentsFromFirestore();
   }, []);
-  console.log(allComments.length);
+
   return (
     <View style={{ ...styles.container }}>
       <FlatList
@@ -109,7 +110,18 @@ export default function CommentsScreen({ navigation, route }) {
               width: windowWidth - 16 * 2,
             }}
           >
-            {/* <Image source={{ uri: item.commentAvatar }} style={styles.commentAvatarImage} /> */}
+            <Image
+              source={{ uri: item.commentAvatar }}
+              style={{
+                width: 28,
+                height: 28,
+                backgroundColor: '#F6F6F6',
+                marginRight: 16,
+                borderRadius: 16,
+                resizeMode: 'cover',
+              }}
+            />
+            {/* <Text style={styles.commentText}>{item.login}</Text> */}
             <View style={{ ...styles.commentTextContainer, width: windowWidth - 28 - 16 * 3 }}>
               <Text style={styles.commentText}>{item.comment}</Text>
               <Text style={styles.commentDate}>
@@ -119,21 +131,6 @@ export default function CommentsScreen({ navigation, route }) {
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
-        // ListFooterComponent={
-        //   <View style={{ width: '100%', marginBottom: 32 }}>
-        //     <TextInput
-        //       value={comment}
-        //       style={styles.input}
-        //       placeholder="Комментировать..."
-        //       cursorColor={'#BDBDBD'}
-        //       placeholderTextColor={'#BDBDBD'}
-        //       onChangeText={commentHandler}
-        //     />
-        //     <TouchableOpacity style={styles.sendButton} onPress={onSend}>
-        //       <FontAwesome5 name="arrow-circle-up" size={34} color={'#FF6C00'} />
-        //     </TouchableOpacity>
-        //   </View>
-        // }
       />
       <View style={{ width: '100%', marginBottom: 12, alignItems: 'flex-end' }}>
         <TextInput
@@ -218,6 +215,7 @@ const styles = StyleSheet.create({
     height: 28,
     marginRight: 16,
     resizeMode: 'cover',
+    backgroundColor: 'red',
   },
   commentAvatarImage: {
     width: 28,

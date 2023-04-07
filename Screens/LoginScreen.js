@@ -55,9 +55,8 @@ export default function LoginScreen({ navigation }) {
       return alert('Все поля должны быть заполнены!');
     }
     await dispatch(authSignInUser(state));
-    // console.log(state);
+
     setState(initialState);
-    // navigation.navigate("Home");
   };
 
   const keyboardHideOut = () => {

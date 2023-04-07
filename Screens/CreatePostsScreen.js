@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   View,
@@ -70,11 +70,8 @@ export default function CreatePostsScreen({ navigation }) {
           longitude: location.coords.longitude,
         };
         setLocation(coords);
-        // setLocation(location);
-        // console.log('location', location);
 
         setPhoto(uri);
-        // console.log('photo', uri);
       } catch (e) {
         if (e.message.includes("Call to function 'ExponentCamera.takePicture' has been rejected")) {
           await MediaLibrary.requestPermissionsAsync();
@@ -106,7 +103,7 @@ export default function CreatePostsScreen({ navigation }) {
   const uploadPostToServer = async () => {
     try {
       const photo = await uploadPhotoToServer();
-      const createPost = await bd
+      await bd
         .firestore()
         .collection('posts')
         .add({ photo, location, title, nameLocation, userId, login });
@@ -116,7 +113,6 @@ export default function CreatePostsScreen({ navigation }) {
   };
 
   const addPostBtn = () => {
-    // uploadPhotoToServer();
     setShowKeyboard(false);
     Keyboard.dismiss();
     if (!photo) return;
@@ -131,7 +127,7 @@ export default function CreatePostsScreen({ navigation }) {
       likesQuantity: 0,
       likeStatus: false,
     };
-    // console.log(post);
+
     uploadPostToServer();
     navigation.navigate('DefaultScreen', { post });
     setPhoto(null);

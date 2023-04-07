@@ -1,5 +1,5 @@
 import React from 'react';
-import { moduleName } from 'react-native';
+
 import { createStackNavigator } from '@react-navigation/stack';
 import DefaultScreenPosts from './nestedScreens/DefaultScreenPosts';
 import CommentsScreen from './nestedScreens/CommentsScreen';
@@ -14,7 +14,7 @@ const PostsScreen = () => {
         name="DefaultScreen"
         component={DefaultScreenPosts}
         options={{
-          headerShown: false,
+          headerShown: true,
           headerTitle: 'Публикации',
           headerTitleStyle: { color: '#212121', fontSize: 17 },
           headerTitleAlign: 'center',

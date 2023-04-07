@@ -26,11 +26,6 @@ export const useRout = isAuth => {
     <ScreenStack.Navigator initialRouteName="Home">
       <ScreenStack.Screen options={{ headerShown: false }} name="Home" component={Home} />
       <ScreenStack.Screen options={{ headerShown: true }} name="Posts" component={PostsScreen} />
-      {/* <ScreenStack.Screen
-        options={{ headerShown: true }}
-        name="CreatePostsScreen"
-        component={CreatePostsScreen}
-      /> */}
     </ScreenStack.Navigator>
   );
 };

@@ -55,8 +55,6 @@ export default function DefaultScreenPosts({ navigation, route }) {
     getDataFromFirestore();
   }, []);
 
-  // console.log(photo);
-
   const { login, email, avatarImage } = useSelector(state => state.auth);
 
   return (
@@ -117,6 +115,7 @@ export default function DefaultScreenPosts({ navigation, route }) {
                         postId: item.id,
                         photo: item.photo,
                         commentsQuantity: item.commentsQuantity,
+                        avatarImage,
                       })
                     }
                   >

@@ -19,6 +19,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import { collection, query, doc, onSnapshot, updateDoc } from 'firebase/compat/firestore';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -67,6 +68,30 @@ export default function ProfileScreen({ navigation }) {
   useEffect(() => {
     getDataFromFirestore();
   }, []);
+
+  const addLike = async (postId, likesQuantity) => {
+    try {
+      const ref = await db.firestore().collection('posts').doc(postId);
+      ref.update({
+        likesQuantity: likesQuantity + 1,
+        likeStatus: true,
+      });
+    } catch (error) {
+      console.log('error-message.add-like', error.message);
+    }
+  };
+
+  const removeLike = async (postId, likesQuantity) => {
+    try {
+      const ref = await db.firestore().collection('posts').doc(postId);
+      ref.update({
+        likesQuantity: likesQuantity - 1,
+        likeStatus: false,
+      });
+    } catch (error) {
+      console.log('error-message.add-like', error.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -139,6 +164,7 @@ export default function ProfileScreen({ navigation }) {
               style={{
                 ...styles.cardContainer,
                 width: windowWidth,
+                height: windowHeight,
               }}
             >
               <Image
@@ -176,6 +202,8 @@ export default function ProfileScreen({ navigation }) {
                         navigation.navigate('CommentsScreen', {
                           postId: item.id,
                           photo: item.photo,
+                          commentsQuantity: item.commentsQuantity,
+                          avatarImage,
                         })
                       }
                     >
@@ -183,10 +211,19 @@ export default function ProfileScreen({ navigation }) {
                       <Text style={styles.cardText}>{item.comments}</Text>
                     </TouchableOpacity>
 
-                    <View style={{ ...styles.cardWrapper, marginLeft: 24 }}>
-                      <Feather name="thumbs-up" size={24} color={'#FF6C00'} />
-                      <Text style={styles.cardText}>{item.likes}</Text>
-                    </View>
+                    <TouchableOpacity
+                      style={styles.cardWrapper}
+                      // onPress={
+                      //   item.likeStatus
+                      //     ? () => removeLike(item.id, item.likesQuantity, item.likeStatus)
+                      //     : () => addLike(item.id, item.likesQuantity, item.likeStatus)
+                      // }
+                    >
+                      <View style={{ ...styles.cardWrapper, marginLeft: 24 }}>
+                        <Feather name="thumbs-up" size={24} color={'#FF6C00'} />
+                        <Text style={styles.cardText}>{item.likes}</Text>
+                      </View>
+                    </TouchableOpacity>
                   </View>
 
                   <View style={{ ...styles.cardWrapper, marginLeft: 145 }}>
@@ -207,7 +244,6 @@ export default function ProfileScreen({ navigation }) {
               </View>
             </View>
           )}
-          // keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
         />
       </ImageBackground>
