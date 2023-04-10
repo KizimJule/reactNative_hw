@@ -21,14 +21,14 @@ import { useDispatch } from 'react-redux';
 import { authSignUpUser } from '../redux/auth/authOperation';
 import * as ImagePicker from 'expo-image-picker';
 
-import db from '../firebase/config';
+// import db from '../firebase/config';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function RegistrationScreen({ navigation }) {
   const [focusedInput, setFocusedInput] = useState(null);
-  const [userImg, setUserImg] = useState(null);
+  // const [userImg, setUserImg] = useState(null);
   const [showKeyboard, setShowKeyboard] = useState(false);
-  const [state, setState] = useState(initialState);
+  // const [state, setState] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
 
   const [pickedImagePath, setPickedImagePath] = useState('');
@@ -78,7 +78,6 @@ export default function RegistrationScreen({ navigation }) {
     setEmail('');
     setPassword('');
     setPickedImagePath('');
-
   };
 
   const downloadAvatar = async () => {
@@ -158,9 +157,7 @@ export default function RegistrationScreen({ navigation }) {
                   </>
                 ) : (
                   <>
-                    <View
-                    
-                    ></View>
+                    <View></View>
                     <TouchableOpacity
                       onPress={downloadAvatar}
                       style={{
@@ -171,8 +168,6 @@ export default function RegistrationScreen({ navigation }) {
                     </TouchableOpacity>
                   </>
                 )}
-
-           
               </View>
 
               <Text style={styles.titleText}>Регистрация</Text>
@@ -184,9 +179,7 @@ export default function RegistrationScreen({ navigation }) {
                 placeholder="Логин"
                 placeholderTextColor={'#BDBDBD'}
                 inputMode="text"
-           
                 value={login}
-            
                 onChangeText={login => setLogin(login)}
                 onFocus={() => {
                   setFocusedInput('login');
@@ -202,7 +195,7 @@ export default function RegistrationScreen({ navigation }) {
                 placeholder="Адрес электронной почты"
                 placeholderTextColor={'#BDBDBD'}
                 inputMode="email"
-                           value={email}
+                value={email}
                 onChangeText={email => setEmail(email)}
                 onFocus={() => {
                   setFocusedInput('email');
@@ -219,7 +212,7 @@ export default function RegistrationScreen({ navigation }) {
                   placeholder="Пароль"
                   placeholderTextColor={'#BDBDBD'}
                   secureTextEntry={!showPassword}
-                              value={password}
+                  value={password}
                   onChangeText={password => setPassword(password)}
                   onFocus={() => {
                     setFocusedInput('password');
